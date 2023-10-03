@@ -193,6 +193,8 @@ spi.xfer2(msg)
 # Main
 ######################################################################
 
+time.sleep(1)
+
 # initialize the register settings
 init_registers()
 

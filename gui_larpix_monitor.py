@@ -440,7 +440,7 @@ def update_plots(frame):
 # Start a data file to store history (file name will need start date)
 start_date = time.strftime("%Y_%m_%d")
 start_time = time.strftime("%H:%M")
-file_name = "./data/larpix_history_" + start_date + ".txt"
+file_name = "/data/larpix_history_" + start_date + ".txt"
 with open(file_name, "w") as file1:
     file1.write(start_date + '\n')
     file1.write(start_time + '\n')
@@ -481,7 +481,7 @@ sensor_1, sensor_2, sensor_3 = 0,0,0
 t_line_colors = ["forestgreen","silver","m","y","peru","greenyellow"]
 t_labels_short = ["CrB","Bkt","S1","S2","S3","CrT"]
 t_labels_long = ["Cryo Bottom","Bucket         ","Sensor 1      ",
-                 "Sensor 2      ","Sensor 3      ","Cryo Top      "]
+                 "Sensor 2      ","Sensor 3      ","Cryo Top Plate"]
 
 ####################################################################
 # Create the GUI interface and data file

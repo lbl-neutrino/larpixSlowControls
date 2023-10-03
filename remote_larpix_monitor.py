@@ -11,9 +11,6 @@ import tkinter.font
 from numpy import arange, pi
 from matplotlib.figure import Figure
 
-# used to run the ADC/CDC reading run simultaneously to other processes
-import threading
-
 # these functions are used to create a child window and checkbox
 from tkinter import Toplevel, IntVar, Checkbutton
 
@@ -44,9 +41,6 @@ from matplotlib.ticker import FormatStrFormatter
 
 # used to call the latest data file
 import os
-
-# threading is used to run buttons outside of the animation
-import threading
 
 ####################################################################
 # Functions
@@ -335,7 +329,7 @@ file_date = input("\nTo view the latest run enter y (otherise enter n):")
 # View the latest file
 if file_date =='y':
 
-    directory_path = './data/'
+    directory_path = '/data/'
     most_recent_file = None
     most_recent_time = 0
 
@@ -349,7 +343,7 @@ if file_date =='y':
                 most_recent_file = entry.name
                 most_recent_time = mod_time
 
-    file_name = f"./data/{most_recent_file}"
+    file_name = f"/data/{most_recent_file}"
 
     print(f"\nYou are reading data from: {file_name}\n")
 
@@ -364,7 +358,7 @@ else:
     # ask user to specify the date of interest
     file_date = input("Enter the date on the data file using"
                     "format: yyyy_mm_dd  ")
-    file_name = f"./data/larpix_history_{file_date}.txt"
+    file_name = f"/data/larpix_history_{file_date}.txt"
 
     # when reading a previous lab run, plot all temperature sensors
     sensors_live = [1,1,1,1,1,1]
@@ -403,7 +397,7 @@ new_ts = [[],[],[],[],[],[]]
 t_line_colors = ["forestgreen","silver","m","y","peru","greenyellow"]
 t_labels_short = ["CB","Bkt","S1","S2","S3","CT"]
 t_labels_long = ["Cryo Bottom","Bucket         ","Sensor 1      ",
-                "Sensor 2      ","Sensor 3      ","Cryo Top      "]
+                "Sensor 2      ","Sensor 3      ","Cryo Top Plate"]
 
 ####################################################################
 # Create the GUI interface
@@ -423,7 +417,7 @@ canvas.get_tk_widget().grid(column=0,row=2, columnspan=3)
 # set title of GUI
 root.title(f"REMOTE Larpix Monitor (run started {start_date} at {start_time})")
 
-# create threaded buttons to quit or select temperature sensors
+# create buttons to quit or select temperature sensors
 buttons()
 
 ####################################################################
