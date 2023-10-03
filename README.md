@@ -1,11 +1,14 @@
 **Larpix Slow Controls**
 This code creates a GUI monitoring controls in the Larpix cryostat at Lbl, including:  
-		(i) level of liquid, 
-		(ii) temperature at cryostat bottom, bucket bottom, cryostat top plate, and 3 optional temperature sensors which can be placed on test subjects
+
+	(i) level of liquid, 
+
+	(ii) temperature at cryostat bottom, bucket bottom, cryostat top plate, and 3 optional temperature sensors which can be placed on test subjects
 
 **To monitor the control sensors in the Larpix lab:**
 Get onto the raspberry pi using a terminal window:  
-		ssh -Y larpix@cryo-control.dhcp.lbl.gov
+
+  ssh -Y larpix@cryo-control.dhcp.lbl.gov
 
 Enter password (IMPORTANT: The 2nd and 3rd digits are the numbers 1 and 0):  
 		s10wcontrols
