@@ -329,7 +329,7 @@ file_date = input("\nTo view the latest run enter y (otherise enter n):")
 # View the latest file
 if file_date =='y':
 
-    directory_path = '/data/'
+    directory_path = '/var/nfs/instrumentation_data/'
     most_recent_file = None
     most_recent_time = 0
 
@@ -343,7 +343,7 @@ if file_date =='y':
                 most_recent_file = entry.name
                 most_recent_time = mod_time
 
-    file_name = f"/data/{most_recent_file}"
+    file_name = f"/var/nfs/instrumentation_data/{most_recent_file}"
 
     print(f"\nYou are reading data from: {file_name}\n")
 
@@ -358,7 +358,7 @@ else:
     # ask user to specify the date of interest
     file_date = input("Enter the date on the data file using"
                     "format: yyyy_mm_dd  ")
-    file_name = f"/data/larpix_history_{file_date}.txt"
+    file_name = f"/var/nfs/instrumentation_data/larpix_history_{file_date}.txt"
 
     # when reading a previous lab run, plot all temperature sensors
     sensors_live = [1,1,1,1,1,1]
