@@ -4,7 +4,8 @@
 ####################################################################
 
 import matplotlib.pyplot as plt
-import tkinter as Tk
+# import tkinter as Tk
+import tk as Tk
 import numpy as np
 import tkinter.font 
 
