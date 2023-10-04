@@ -1,7 +1,8 @@
 **Larpix Slow Controls**
-This code creates a GUI monitoring controls in the Larpix cryostat at Lbl, including:  
+The code in this repository creates a user interface for monitoring controls in the Larpix cryostat at Lbl, including:  
 
 (i) level of liquid, 
+
 (ii) temperature at cryostat bottom, bucket bottom, cryostat top plate, and 3 optional temperature sensors which can be placed on test subjects
 
 **To monitor the control sensors in the Larpix lab:**
@@ -18,7 +19,19 @@ Go to the slowcontrols/ directory and run the python code for creating the GUI:
   python3 gui_larpix_monitor.py
 
 **To monitor the control sensors remotely:**
-In the same slowcontrols/ directory, run the code for creating a remote GUI. A dedicated terminal window is required for this purpose:  
+Step 1: At your remote location create a local git repository:
+
+	git init
+
+Step 2: Create the origin which tells your computer where to get this code:
+
+	git remote add origin https://github.com/lbl-neutrino/larpixSlowControls.git
+
+Step 3: pull the files in the Github repository into your remote git file (if it is not main then replace "main" below with your file path)
+
+ 	git pull origin main 
+
+Step 4: there should be a new directory at your location called larpixSlowControls. Go into that directory and launch the remote python code. A dedicated terminal window is required for this purpose since python will ask you which data file you wish to read:
 
   python3 remote_larpix_monitor.py
 
@@ -44,3 +57,4 @@ The final plots from previous runs are in a plots directory on both the raspberr
 To view this plot from the terminal window:  
 
 	gio open larpix_plots_2023_09_29.png
+
