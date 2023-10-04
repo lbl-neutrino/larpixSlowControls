@@ -2,7 +2,7 @@
 
 The code in this repository creates a user interface for monitoring larpix cryostat controls, including:  
 
-/t (i) level of liquid, 
+(i) level of liquid, 
 
 (ii) temperature at cryostat bottom, bucket bottom, cryostat top plate, and 3 optional temperature sensors which can be placed on test subjects
 
