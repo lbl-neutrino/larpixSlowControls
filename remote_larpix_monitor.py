@@ -3,27 +3,24 @@
 # larpix lab cryostat
 ####################################################################
 
-import matplotlib.pyplot as plt
-# import tkinter as Tk
-import tk as Tk
 import numpy as np
-import tkinter.font 
-
 from numpy import arange, pi
-from matplotlib.figure import Figure
 
+
+import tkinter as Tk
 # these functions are used to create a child window and checkbox
-from tkinter import Toplevel, IntVar, Checkbutton
-
+from tkinter import Toplevel, IntVar, Checkbutton, font, ttk
+#import tkinter.font 
 # this will be used to chose which temperature sensors to read
-from tkinter import ttk
+#from tkinter import ttk
 
 # FirgureCanvasTkAgg will place python figures in the GUI
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from matplotlib.animation import FuncAnimation # updates time-series plot
+from matplotlib.figure import Figure		   # places plots on gui
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-# FuncAnimation continuously updates the time-serioes plots
-import matplotlib.animation as animation
-from matplotlib.animation import FuncAnimation
 
 # the "now" function in datetime formats dates and times
 import datetime
