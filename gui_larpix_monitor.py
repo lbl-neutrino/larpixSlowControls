@@ -370,8 +370,6 @@ def update_plots(frame):
     # get 6 new temperature values from adc
     new_data = read_adc()
 
-    root.update()
-
     # cycle through all 6 channels
     for i in range(0,6):
 
