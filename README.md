@@ -20,7 +20,7 @@ Go to the slowcontrols/ directory and run the python code for creating the GUI:
 **To monitor the control sensors remotely:**
 In the same slowcontrols/ directory, run the code for creating a remote GUI. A dedicated terminal window is required for this purpose:  
 
-  python3 gui_larpix_monitor.py
+  python3 remote_larpix_monitor.py
 
 A promt will ask if you want to remotely monitor a live run:  
 
@@ -30,15 +30,15 @@ A promt will ask if you want to remotely monitor a live run:
 			the slowcontrols/data/ directory to see available dates for past runs
 
 **Data Directory:**
-While a live run is taking place in the lab, data will be stored in the slowcontrols/data directory under a filename specifying the date the run was launched. Example:  
+While a live run is taking place in the lab, data will be stored in the /data/ directory under a filename specifying the date the run was launched. Example:  
 
   larpix_history_2023_09_29.txt
 
-You can view data in this file via the GUI, by following the instructions above for monitoring the control sensors remotely. Alternatively you can see a screenshot of the final GUI window in the plots/ directory
+You can view data in this file via the GUI, by following the instructions above for monitoring the control sensors remotely. Alternatively you can see a screenshot of the final GUI window in the /data/plots/ directory
 
 **Plots Directory:**
 
-The final plots from previous runs are in the slowcontrols/plots directory. They’re labeled with the start date of the run. Example:  
+The final plots from previous runs are in the /data/plots directory. They’re labeled with the start date of the run. Example:  
 
   larpix_plots_2023_09_29.png
 
