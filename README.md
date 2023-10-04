@@ -1,11 +1,13 @@
 **Larpix Slow Controls**
-The code in this repository creates a user interface for monitoring controls in the Larpix cryostat at Lbl, including:  
 
-(i) level of liquid, 
+The code in this repository creates a user interface for monitoring larpix cryostat controls, including:  
+
+/t (i) level of liquid, 
 
 (ii) temperature at cryostat bottom, bucket bottom, cryostat top plate, and 3 optional temperature sensors which can be placed on test subjects
 
 **To monitor the control sensors in the Larpix lab:**
+
 Get onto the raspberry pi using a terminal window:  
 
   ssh -Y larpix@cryo-control.dhcp.lbl.gov
@@ -19,6 +21,7 @@ Go to the slowcontrols/ directory and run the python code for creating the GUI:
   python3 gui_larpix_monitor.py
 
 **To monitor the control sensors remotely:**
+
 Step 1: At your remote location create a local git repository:
 
 	git init
@@ -33,7 +36,7 @@ Step 3: pull the files in the Github repository into your remote git file (if it
 
 Step 4: there should be a new directory at your location called larpixSlowControls. Go into that directory and launch the remote python code. A dedicated terminal window is required for this purpose since python will ask you which data file you wish to read:
 
-  python3 remote_larpix_monitor.py
+  	python3 remote_larpix_monitor.py
 
 A promt will ask if you want to remotely monitor a live run:  
 
@@ -42,6 +45,7 @@ A promt will ask if you want to remotely monitor a live run:
   (ii) if you reply n (for no) you will be asked to supply a date in format yyyy_mm_dd. Check the data directory (instructions below) to see available dates.
 
 **Data Directory:**
+
 Data is stored both on the raspberry pi (at /data/) and on labpix (at /var/nfs/instrumentation_data/). While a live run is taking place in the lab, data will be stored in both places under a filename specifying the date the run was launched. Example:  
 
   larpix_history_2023_10_03.txt
