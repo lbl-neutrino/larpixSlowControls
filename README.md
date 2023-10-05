@@ -17,7 +17,7 @@ Enter password (IMPORTANT: The 2nd and 3rd digits are the numbers 1 and 0):
 
   s10wcontrols
 
-**Only one monitor should be launched on the larpix raspberry pi at a time.** If one is already running, launch your monitor from labpix instead (instructions below). If you don't know if one is running, use the following query in your terminal window:
+**ONLY ONE MONITOR SHOULD BE LAUNCHED ON THE LARPIX RASPBERRY PI AT A TIME.** If one is already running, launch your monitor from labpix instead (instructions below). If you don't know if one is running, use the following query in your terminal window:
 
 	ps -ef
 
@@ -25,18 +25,18 @@ Amongst the resulting list, look for the following python3 script:
 
 	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 gui_larpix_monitor.py
 
-You can either kill this run (in this case, kill 13762) and start a new one, or launch your monitor on labpix (instructions below).
+You can either kill this run (in this case, type "kill 13762" in your terminal window) and start a new one, or launch your monitor on labpix (instructions below). When you kill a run the data is stored and can be viewed on labpix.
 
 To start a new run, go to the /slowcontrols/ directory and run the python code for creating the GUI:  
 
-  python3 gui_larpix_monitor.py
+  	python3 gui_larpix_monitor.py
 
 #######
-**To monitor live or historical controls on labpix** #######
+**To monitor live or historical runs on labpix** #######
 
 On labpix you can monitor controls from a live or historical run. If you haven't done so already, go to a .git repository and clone the larpixSlowControls repository from Github:
 
-git clone https://github.com/lbl-neutrino/larpixSlowControls.git
+	git clone https://github.com/lbl-neutrino/larpixSlowControls.git
 
 The cloning process will create a new directory called /larpixSlowControls/. Go into that directory and run the following code (note, a dedicated terminal window is required for this purpose since python will prompt you for input):
 
@@ -53,7 +53,7 @@ A promt will ask if you want to remotely monitor the latest run:
 
 Data is stored both on the raspberry pi (at /data/) and on labpix (at /var/nfs/instrumentation_data/) while the live run is progressing. The file name will specify the date the run was launched. Example:  
 
-  larpix_history_2023_10_03.txt
+  	larpix_history_2023_10_03.txt
 
 You can view data from a live or historical run from labpix (instructions above).
 
@@ -61,7 +61,7 @@ You can view data from a live or historical run from labpix (instructions above)
 
 When a run is over the final plots are sent to the /plots/ directory on both the raspberry pi (at /data/plots/) and on labpix (at /var/nfs/instrumentation_data/plots/). The graphic files are labeled with the start date of the run. Example:  
 
-  larpix_plots_2023_10_03.png
+  	larpix_plots_2023_10_03.png
 
 To view a plot from the terminal window:  
 
