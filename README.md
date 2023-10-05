@@ -6,8 +6,11 @@ The code in this repository creates a user interface for monitoring larpix cryos
 
 (ii) temperature at cryostat bottom, bucket bottom, cryostat top plate, and 3 optional temperature sensors which can be placed on test subjects
 
-########
-**To monitor controls live on the Larpix raspberry pi** ########
+#####################################################################################
+
+**To monitor controls live on the Larpix raspberry pi** 
+
+#####################################################################################
 
 Get onto the raspberry pi using a terminal window:  
 
@@ -25,14 +28,17 @@ Amongst the resulting list, look for the following python3 script:
 
 	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 gui_larpix_monitor.py
 
-You can either kill this run (in this case, kill 13762) and start a new one, or launch your monitor on labpix (instructions below).
+You can either launch your monitor on labpix or kill this run (in this case kill 13762) and start a new one. 
 
 To start a new run, go to the /slowcontrols/ directory and run the python code for creating the GUI:  
 
 	python3 gui_larpix_monitor.py
 
-#######
-**To monitor live or historical controls on labpix** #######
+#####################################################################################
+
+**To monitor live or historical controls on labpix**
+
+#####################################################################################
 
 On labpix you can monitor controls from a live or historical run. If you haven't done so already, go to a .git repository and clone the larpixSlowControls repository from Github:
 
@@ -48,8 +54,12 @@ A promt will ask if you want to remotely monitor the latest run:
 
   (ii) if you reply n (for no) you will be asked to supply a date in format yyyy_mm_dd. Check the data directory (instructions below) to see available dates.
 
-#######
-**Data Directory:** #######
+#####################################################################################
+
+**Data Directory:**
+
+#####################################################################################
+
 
 Data is stored both on the raspberry pi (at /data/) and on labpix (at /var/nfs/instrumentation_data/) while the live run is progressing. The file name will specify the date the run was launched. Example:  
 
@@ -57,7 +67,35 @@ Data is stored both on the raspberry pi (at /data/) and on labpix (at /var/nfs/i
 
 You can view data from a live or historical run from labpix (instructions above).
 
-**Plots Directory:**
+#####################################################################################
+
+**Selecting which sensors to display** 
+
+#####################################################################################
+
+Data is collected and stored from all 6 temperature sensors, but the user can choose which sensors to graph on the user interface using the button at the top of the monitor "Select Temperature Sensors". 
+
+#####################################################################################
+
+**To Stop the Run** 
+
+#####################################################################################
+
+When you stop the run, python writes "end" to the last line of the data file. You must be on the raspberry pi (instructions above) to stop the run. You can either use the "Quit Larpix Monitor" button at the top of the primary monitor gui, or run the following query in a terminal window:
+
+	ps -ef
+
+Amongst the resulting list, look for the following python3 script:
+
+	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 gui_larpix_monitor.py
+
+In this case, you would type "kill 13762 <return>" in the terminal window.
+
+#####################################################################################
+
+**Plots Directory:** #######
+
+#####################################################################################
 
 When a run is over the final plots are sent to the /plots/ directory on both the raspberry pi (at /data/plots/) and on labpix (at /var/nfs/instrumentation_data/plots/). The graphic files are labeled with the start date of the run. Example:  
 
