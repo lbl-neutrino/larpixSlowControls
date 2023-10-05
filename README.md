@@ -36,7 +36,7 @@ To start a new run, go to the /slowcontrols/ directory and run the python code f
 
 On labpix you can monitor controls from a live or historical run. If you haven't done so already, go to a .git repository and clone the larpixSlowControls repository from Github:
 
-git clone https://github.com/lbl-neutrino/larpixSlowControls.git
+	git clone https://github.com/lbl-neutrino/larpixSlowControls.git
 
 The cloning process will create a new directory called /larpixSlowControls/. Go into that directory and run the following code (note, a dedicated terminal window is required for this purpose since python will prompt you for input):
 
@@ -44,7 +44,7 @@ The cloning process will create a new directory called /larpixSlowControls/. Go 
 
 A promt will ask if you want to remotely monitor the latest run:
 
-  (i) if you reply y (for yes) you will see the latest data. If the latest data is from a run that has ended, the monitor will display the message "Lab run has finished". In this case if you wish to instigate a new run from the raspberry pi follow the directions above.
+  (i) if you reply y (for yes) you will see the latest data. If the latest data is from a run that has ended, the monitor will display the message "Lab run has finished". In this case, if you wish to instigate a new run from the raspberry pi follow the directions above.
 
   (ii) if you reply n (for no) you will be asked to supply a date in format yyyy_mm_dd. Check the data directory (instructions below) to see available dates.
 
