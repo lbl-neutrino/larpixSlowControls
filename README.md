@@ -11,11 +11,11 @@ The code in this repository creates a user interface for monitoring larpix cryos
 
 Get onto the raspberry pi using a terminal window:  
 
-  ssh -Y larpix@cryo-control.dhcp.lbl.gov
+  	ssh -Y larpix@cryo-control.dhcp.lbl.gov
 
 Enter password (IMPORTANT: The 2nd and 3rd digits are the numbers 1 and 0):  
 
-  s10wcontrols
+	s10wcontrols
 
 **Only one monitor should be launched on the larpix raspberry pi at a time.** If one is already running, launch your monitor from labpix instead (instructions below). If you don't know if one is running, use the following query in your terminal window:
 
@@ -29,7 +29,7 @@ You can either kill this run (in this case, kill 13762) and start a new one, or 
 
 To start a new run, go to the /slowcontrols/ directory and run the python code for creating the GUI:  
 
-  python3 gui_larpix_monitor.py
+	python3 gui_larpix_monitor.py
 
 #######
 **To monitor live or historical controls on labpix** #######
@@ -53,7 +53,7 @@ A promt will ask if you want to remotely monitor the latest run:
 
 Data is stored both on the raspberry pi (at /data/) and on labpix (at /var/nfs/instrumentation_data/) while the live run is progressing. The file name will specify the date the run was launched. Example:  
 
-  larpix_history_2023_10_03.txt
+	larpix_history_2023_10_03.txt
 
 You can view data from a live or historical run from labpix (instructions above).
 
@@ -61,7 +61,7 @@ You can view data from a live or historical run from labpix (instructions above)
 
 When a run is over the final plots are sent to the /plots/ directory on both the raspberry pi (at /data/plots/) and on labpix (at /var/nfs/instrumentation_data/plots/). The graphic files are labeled with the start date of the run. Example:  
 
-  larpix_plots_2023_10_03.png
+	larpix_plots_2023_10_03.png
 
 To view a plot from the terminal window:  
 
