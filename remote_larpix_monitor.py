@@ -21,7 +21,6 @@ from matplotlib.animation import FuncAnimation # updates time-series plot
 from matplotlib.figure import Figure		   # places plots on gui
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-
 # the "now" function in datetime formats dates and times
 import datetime
 import time

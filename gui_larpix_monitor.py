@@ -168,7 +168,8 @@ def read_cdc():
     # used to calibrate levels to capacitance
     sensor_length = 300
     min_cap = 1.0646713
-    max_cap = 9.5106614
+#    max_cap = 9.5106614                    # smaller crab pot bucket
+    max_cap = 5.850732                      # large rectangular bucket
 
     while len(caps) < num_test:             # read capacitance from cdc
         val = bus.read_i2c_block_data(i2c_addr,0,19)
