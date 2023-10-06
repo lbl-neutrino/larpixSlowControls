@@ -16,13 +16,7 @@ The code in this repository creates a user interface for monitoring larpix cryos
 
 #################################################################################
 
-Get onto the raspberry pi using a terminal window:  
-
-  	ssh -Y larpix@cryo-control.dhcp.lbl.gov
-
-Enter password (IMPORTANT: The 2nd and 3rd digits are the numbers 1 and 0):  
-
-	s10wcontrols
+To get onto the Larpix Raspberry Pi, go to the DUNE ND Electronics Development portal, and read the file entitled "Larpix Raspberry Pi sign on".
 
 **Only one monitor should be launched on the larpix raspberry pi at a time.** If one is already running, launch your monitor from labpix instead (instructions below). If you don't know if one is running, use the following query in your terminal window:
 
