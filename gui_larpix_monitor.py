@@ -479,7 +479,7 @@ sensor_1, sensor_2, sensor_3 = 0,0,0
 # used for tempurature time-series plot
 t_line_colors = ["forestgreen","silver","m","y","peru","greenyellow"]
 t_labels_short = ["CrB","Bkt","S1","S2","S3","CrT"]
-t_labels_long = ["Cryo Bottom","Bucket         ","Sensor 1      ",
+t_labels_long = ["Cryo Bottom","Bucket Bottom  ","Sensor 1      ",
                  "Sensor 2      ","Sensor 3      ","Cryo Top Plate"]
 
 ####################################################################
