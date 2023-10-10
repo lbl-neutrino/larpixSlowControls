@@ -478,8 +478,8 @@ sensor_1, sensor_2, sensor_3 = 0,0,0
 # used for tempurature time-series plot
 t_line_colors = ["forestgreen","silver","m","y","peru","greenyellow"]
 t_labels_short = ["CrB","Bkt","S1","S2","S3","CrT"]
-t_labels_long = ["Cryo Bottom","Bucket         ","Sensor 1      ",
-                 "Sensor 2      ","Sensor 3      ","Cryo Top Plate"]
+t_labels_long = ["Cryo Bottom  ","Under Bucket ","Sensor 1     ",
+                 "Sensor 2     ","Sensor 3     ","Top Plate    "]
 
 ####################################################################
 # Create the GUI interface and data file
@@ -551,9 +551,11 @@ Tk.mainloop()
 # Save the last frame of the animation
 ####################################################################
 
-fig.savefig(f'./plots/larpix_plots_{start_date}')
-print("\nFinal plots are available in the plots folder"
-      "\nData is available in the data folder"
+fig.savefig(f'/data/plots/larpix_plots_{start_date}')
+print("\nFinal plots are available on the raspberry pi (at /data/plots/)" 
+      " or on labpix (at /var/nfs/instrumentation_data/plots/)"
+      "\nThe data file is available on the raspberry pi (at /data/)" 
+      " or on labpix (at /var/nfs/instrumentation_data/)"
       "\nADC register settings are listed in the data file")
 
 with open(file_name, "a") as file1:

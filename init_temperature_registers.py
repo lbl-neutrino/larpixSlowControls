@@ -109,7 +109,7 @@ def table_register_settings():
 # Initialize global variables
 ######################################################################    
 
-global file_name
+#global file_name
 
 test = True
 table = []                  # table of register settings
@@ -202,14 +202,14 @@ init_registers()
 table_register_settings()
 
 # open the data file created in gui_larpix_monitor.py
-file1 = open(file_name, 'a')
+#file1 = open(file_name, 'a')
 #print(table, file=file1)
-print(tabulate(table, headers=["Reg", "Bits", "Channel", 
-        "Setting", "Decimal Setting", "Reset Value", 
-        "Register Setting"]), file=file1)
+#print(tabulate(table, headers=["Reg", "Bits", "Channel", 
+#        "Setting", "Decimal Setting", "Reset Value", 
+#        "Register Setting"]), file=file1)
 
 # close the data file
-file1.close()
+#file1.close()
 
 
 
