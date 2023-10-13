@@ -1,6 +1,6 @@
 ####################################################################
-# Monitor the temperature and level of liquid in the larpix lab
-# cryostat and write the data to the InfluxDB database on labpix
+# Monitor the temperature, level of liquid and pressure in the larpix
+# cryostat. Write the data to the InfluxDB database on labpix
 ####################################################################
 
 # used to get mean and median of ADC readings
@@ -15,18 +15,13 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 import spidev
 spi = spidev.SpiDev()           # abbreviate spidev
 
+# serial is used to read/write data to the pressure gauge through the
+# raspberry pi's USB port
+import serial
+
 ######################################################################
 # Functions
 ######################################################################
-
-# set up the mechanism used to communicate with the temperature ADC
-def set_up_spi():
-    bus = 0                         	# only SPI bus 0 is available
-    device = 0                       	# chip select pin (0 or 1)
-    spi.open(bus, device)           	# open the specified connection
-    spi.max_speed_hz = 500000       	# set SPI speed
-    # Mode 3 samples on falling edge, shifts out on rising edge
-    spi.mode = 3 
 
 # read cdc a ten times. Take the median of every 5. Average the medians
 def read_cdc():
@@ -141,21 +136,48 @@ def read_adc():
 
     return temperatures
 
+
+def read_pressure():
+    def read_resp():
+#        global pg
+        resp = pg.read_until(b'\r')
+        return str(resp.strip(b'\r').decode('utf-8'))
+
+    global pg
+
+    pg.write(b'STREAM_ON\r')
+    pg.flushInput()
+    pressure = 0
+    resp = read_resp().split(' ')
+    pressure += float(resp[0].split(',')[0])
+    pg.write(b'STREAM_OFF\r')
+    pg.flushInput()
+#    print(f"Pressure = {pressure}")
+    return pressure
+
 ####################################################################
-# Open external files
+# Open files to initialize sensors or convert resistance to temperature
 ####################################################################
 
 # open file that converts resistance to temperature
 with open("convert_resistance_to_temperature.py") as convert_r:
     exec(convert_r.read())
 
-# open file that initializes CDC registers to measure levels
+# initialize CDC registers to measure levels
 with open("init_cdc.py") as init_l:
     exec(init_l.read())
 
-# open file that initializes ADC registers to measure temperatures
+# initialize ADC registers to measure temperatures
 with open("init_temperature_registers.py") as init_t:
     exec(init_t.read())
+
+# pg is a set of functions used to communicate with the pressure gauge
+# with arguments: (port, baudrate, # data bits,parity=none, stop bits)
+pg = serial.Serial('/dev/ttyUSB0', 9600, 8, 'N', 1, timeout=1)
+
+# initialize pressure gauge
+with open("init_pressure.py") as init_p:
+    exec(init_p.read())
 
 ######################################################################
 # set global variables
@@ -166,7 +188,6 @@ level = 0
 tempers = []
 t_labels = ["t_cryo_bottom","t_under_bucket","t_sensor1", "t_sensor2",
             "t_sensor3","t_top_plate"]
-
 run = 0
 
 # The following variables are needed to push data into Influxdb, the 
@@ -200,3 +221,9 @@ while(run == 0):
     for i in range(0,6):
         p = influxdb_client.Point("larpix_slow_controls").field(t_labels[i], tempers[i])
         write_api.write(bucket=bucket, org=org, record=p)
+
+    # read pressure
+    pressure = read_pressure()
+    # write level to influxDB
+    p = influxdb_client.Point("larpix_slow_controls").field("pressure", pressure)
+    write_api.write(bucket=bucket, org=org, record=p)
