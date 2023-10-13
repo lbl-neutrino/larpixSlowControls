@@ -10,7 +10,9 @@ The code in this repository creates a user interface for monitoring larpix cryos
 
 (ii) temperature at cryostat bottom, bucket bottom, cryostat top plate, and 3 optional temperature sensors which can be placed on test subjects
 
-The following steps must be followed to monitor Larpix controls. Complete instructions for each step are detailed in subsequent sections.
+(iii) pressure differential inside cryostat
+
+The following steps are followed to monitor Larpix controls. Each step is detailed in subsequent sections.
 
 **Step 1:** Launch a monitoring session on the Larpix Raspberry Pi
 
@@ -26,9 +28,9 @@ The following steps must be followed to monitor Larpix controls. Complete instru
 
 #################################################################################
 
-To get onto the Larpix Raspberry Pi, go to the DUNE ND Electronics Development portal, and read the file entitled "Larpix Slow Controls Credentials".
+To get onto the Larpix Pi: read DUNE ND Electronics Development/Control Monitors/Larpix Slow Controls Credentials
 
-**Only one monitoring session should be launched on the larpix raspberry pi at a time.** If you don't know if one is running, use the following query in your terminal window:
+**Only one monitoring session should be launched at a time.** Use the following query in your terminal window to see if one is already running:
 
 	ps -ef
 
@@ -36,11 +38,11 @@ Amongst the resulting list, look for a line with "larpix_monitor.py" on the end.
 
 	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 larpix_monitor.py
 
-If no session is already in progress, go to the /slowcontrols/ directory and run the following python code:
+If no session is already in progress, go to the /slowcontrols/ directory on the Pi and run the following python code:
 
 	python3 larpix_monitor.py
 
-If the code is running successfully you will not see a response on your terminal window, but the data will begin to show up on the dashboard (Step 3).
+If the code is running successfully you may not see a response on your terminal window, but the data will begin to show up on the dashboard (Step 3).
 
 #################################################################################
 
@@ -64,13 +66,13 @@ Open a web browser on your computer and go to the portal you configured in Step 
 
 	localhost:2000
 
-You should be taken to the Grafana login page. The username and password are stored in the google docs file entitled "Larpix Slow Controls Credentials" on the DUNE ND Electronics Development portal.
+You should be taken to the Grafana login page. The username and password are stored in DUNE ND Electronics Development/Control Monitors/Larpix Slow Controls Credentials.
 
 At the top of the Grafana window is a search panel. Search for:
 
  	Larpix Slow Controls
 
-You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) Larpix Slow Controls - Editable. If you wish to play with the dashboard go to the editable version. If you wish to save your changes to the dashboard please save a version under your own name. For example, you probably see one already named "Larpix Slow Controls - cmcnulty". You can save your version by clicking on the gear symbol at the top of the page which will take you to a new page where you can configure certain parameters and then click on the "Save as" button at the top. 
+You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) Larpix Slow Controls - Editable. If you wish to play with the dashboard go to the editable version. If you wish to save your changes to the dashboard please save a version under your own name. For example, you probably already see one named "Larpix Slow Controls - cmcnulty". Save your version by clicking on the gear symbol at the top of the dashboard. This will take you to a new page where you can configure certain parameters. Click on the "Save as" button at the top. 
 
 #################################################################################
 
@@ -86,4 +88,4 @@ Amongst the resulting list, look for a line with "larpix_monitor.py" on the end.
 
 	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 larpix_monitor.py
 
-In this example, you would type "kill 13762 <return>" in the terminal window. 
+In this example, you would type "kill 13762 <return>" in the terminal window to stop the monitoring session.
