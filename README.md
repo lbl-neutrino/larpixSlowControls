@@ -10,68 +10,67 @@ The code in this repository creates a user interface for monitoring larpix cryos
 
 (ii) temperature at cryostat bottom, bucket bottom, cryostat top plate, and 3 optional temperature sensors which can be placed on test subjects
 
+The following steps must be followed to monitor Larpix controls. Complete instructions for each step are detailed in subsequent sections.
+
+**Step 1:** Launch a monitoring session on the Larpix Raspberry Pi
+
+**Step 2:** Connect your computer to the lab computer (Labpix)
+
+**Step 3:** Launch the slow control dashboard
+
+**Step 4:** When you're finished, stop the monitoring session
+
 #################################################################################
 
-**TO MONITOR CONTROLS LIVE ON LARPIX RASPBERRY PI** 
+**Step 1: LAUNCH A MONITORING SESSION ON THE LARPIX RASPBERRY PI** 
 
 #################################################################################
 
-To get onto the Larpix Raspberry Pi, go to the DUNE ND Electronics Development portal, and read the file entitled "Larpix Raspberry Pi sign on".
+To get onto the Larpix Raspberry Pi, go to the DUNE ND Electronics Development portal, and read the file entitled "Larpix Slow Controls Credentials".
 
-**Only one monitor should be launched on the larpix raspberry pi at a time.** If one is already running, launch your monitor from labpix instead (instructions below). If you don't know if one is running, use the following query in your terminal window:
+**Only one monitoring session should be launched on the larpix raspberry pi at a time.** If you don't know if one is running, use the following query in your terminal window:
 
 	ps -ef
 
-Amongst the resulting list, look for the following python3 script:
+Amongst the resulting list, look for a line with "larpix_monitor.py" on the end. Example:
 
-	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 gui_larpix_monitor.py
+	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 larpix_monitor.py
 
-You can either launch your monitor on labpix or kill this run (in this case kill 13762) and start a new one. 
+If no session is already in progress, go to the /slowcontrols/ directory and run the following python code:
 
-To start a new run, go to the /slowcontrols/ directory and run the python code for creating the GUI:  
+	python3 larpix_monitor.py
 
-	python3 gui_larpix_monitor.py
-
-#################################################################################
-
-**TO MONIOR LIVE OR HISTORICAL DATA ON LABPIX**
+If the code is running successfully you will not see a response on your terminal window, but the data will begin to show up on the dashboard (Step 3).
 
 #################################################################################
 
-On labpix you can monitor controls from a live or historical run. If you haven't done so already, go to a .git repository and clone the larpixSlowControls repository from Github:
+**Step 2: CONNECT YOUR COMPUTER TO THE LAB COMPUTER (LABPIX)**
 
-	git clone https://github.com/lbl-neutrino/larpixSlowControls.git
+#################################################################################
 
-The cloning process will create a new directory called /larpixSlowControls/. Go into that directory and run the following code (note, a dedicated terminal window is required for this purpose since python will prompt you for input):
+Connect a port on your computer to port 3000 on Labpix by typing the following text into a terminal window:
 
-  	python3 remote_larpix_monitor.py
+	ssh -L 2000:localhost:3000 username@labpix.dhcp.lbl.gov
 
-A promt will ask if you want to remotely monitor the latest run:
+Notes: Change to your username and if necessary, change the 2000 in this example to an open port on your computer. 
 
-  (i) if you reply y (for yes) you will see the latest data. If the latest data is from a run that has ended, the monitor will display the message "Lab run has finished". In this case, if you wish to instigate a new run from the raspberry pi follow the directions above.
+#################################################################################
 
-  (ii) if you reply n (for no) you will be asked to supply a date in format yyyy_mm_dd. Check the data directory (instructions below) to see available dates.
+**Step 3: LAUNCH THE SLOW CONTROL DASHBOARD**
 
-##################################################################################
+#################################################################################
 
-**DATA DIRECTORY:**
+Open a web browser on your computer and go to the portal you configured in Step 2. In this example, you would type the following into your web browser:
 
-##################################################################################
+	localhost:2000
 
+You should be taken to the Grafana login page. The username and password are stored in the google docs file entitled "Larpix Slow Controls Credentials" on the DUNE ND Electronics Development portal.
 
-Data is stored both on the raspberry pi (at /data/) and on labpix (at /var/nfs/instrumentation_data/) while the live run is progressing. The file name will specify the date the run was launched. Example:  
+At the top of the Grafana window is a search panel. Search for:
 
-	larpix_history_2023_10_03.txt
+ 	Larpix Slow Controls
 
-You can view data from a live or historical run from labpix (instructions above).
-
-##################################################################################
-
-**SELECTING WHICH SENSORS TO DISPLAY** 
-
-##################################################################################
-
-Data is collected and stored from all 6 temperature sensors. Three of the sensors are always shown (Cryo Bottom, Bucket Bottom, Cryo Top Place), but the user can choose which optional sensors (S1, S2, S3) to graph on the user interface, using the button at the top of the monitor "Select Temperature Sensors". 
+You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) Larpix Slow Controls - Editable. If you wish to play with the dashboard go to the editable version. If you wish to save your changes to the dashboard please save a version under your own name. For example, you probably see one already named "Larpix Slow Controls - cmcnulty". You can save your version by clicking on the gear symbol at the top of the page which will take you to a new page where you can configure certain parameters and then click on the "Save as" button at the top. 
 
 #################################################################################
 
@@ -79,26 +78,12 @@ Data is collected and stored from all 6 temperature sensors. Three of the sensor
 
 #################################################################################
 
-When you stop the run, python writes "end" to the last line of the data file. You must be on the raspberry pi (instructions above) to stop the run. You can either use the "Quit Larpix Monitor" button at the top of the primary monitor gui, or run the following query in a terminal window:
+You must be on the raspberry pi (instructions above) to stop the run. Type the follwoing into a terminal window:
 
 	ps -ef
 
-Amongst the resulting list, look for the following python3 script:
+Amongst the resulting list, look for a line with "larpix_monitor.py" on the end. Example:
 
-	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 gui_larpix_monitor.py
+	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 larpix_monitor.py
 
-In this case, you would type "kill 13762 <return>" in the terminal window.
-
-#################################################################################
-
-**PLOTS DIRECTORY:**
-
-#################################################################################
-
-When a run is over the final plots are sent to the /plots/ directory on both the raspberry pi (at /data/plots/) and on labpix (at /var/nfs/instrumentation_data/plots/). The graphic files are labeled with the start date of the run. Example:  
-
-	larpix_plots_2023_10_03.png
-
-To view a plot from the terminal window:  
-
-	gio open larpix_plots_2023_09_29.png
+In this example, you would type "kill 13762 <return>" in the terminal window. 
