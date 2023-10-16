@@ -38,7 +38,7 @@ def read_cdc():
     sensor_length = 300
     min_cap = 1.0646713
 #    max_cap = 9.5106614                    # small bucket w sensor diagonal
-    max_cap = 3.3422823                     # large bucket w sensor vertical
+    max_cap = 3.6808461                     # large bucket w sensor vertical
 
     while len(caps) < num_test:             # read capacitance from cdc
         val = bus.read_i2c_block_data(i2c_addr,0,19)
