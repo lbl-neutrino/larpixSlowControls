@@ -23,7 +23,10 @@ import serial
 # Functions
 ######################################################################
 
-# read cdc a ten times. Take the median of every 5. Average the medians
+# Read the level of liquid in the Larpix Cryostat, by reading a CDC 
+# (capacitance to digital converter). To improve precision this routine 
+# reads capacitance 10 times, takes the median of every 5, and then 
+# averages the medians.
 def read_cdc():
 
     num_test = 10                           # number of cdc readings
@@ -35,7 +38,7 @@ def read_cdc():
     sensor_length = 300
     min_cap = 1.0646713
 #    max_cap = 9.5106614                    # small bucket w sensor diagonal
-    max_cap = 5.8507323                     # large bucket w sensor vertical
+    max_cap = 3.3422823                     # large bucket w sensor vertical
 
     while len(caps) < num_test:             # read capacitance from cdc
         val = bus.read_i2c_block_data(i2c_addr,0,19)
