@@ -28,7 +28,7 @@ The following steps are followed to monitor Larpix controls. Each step is detail
 
 #################################################################################
 
-To get onto the Larpix Pi: read DUNE ND Electronics Development/Control Monitors/Larpix Slow Controls Credentials
+To get onto the Larpix Pi: read DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Slow Controls Credentials
 
 **Only one monitoring session should be launched at a time.** Use the following query in your terminal window to see if one is already running:
 
