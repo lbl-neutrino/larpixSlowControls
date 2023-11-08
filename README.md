@@ -12,21 +12,27 @@ The code in this repository creates a user interface for monitoring larpix cryos
 
 (iii) pressure differential inside cryostat
 
+(iv) high-voltage supplied to the cathode plane of a test cube (this is optional)
+
 The following steps are followed to monitor Larpix controls. Each step is detailed in subsequent sections.
 
-**Step 1:** Launch a monitoring session on the Larpix Raspberry Pi
+**Step 1:** Launch a monitoring session on the cryo-control Raspberry Pi
 
-**Step 2:** Connect your computer to the lab computer (Labpix)
+**Step 2 (optional):** Launch the monitoring of high voltage on the drizzle Raspberry Pi
 
-**Step 3:** Launch the slow control dashboard
+**Step 3:** Connect your computer to the lab computer (Labpix)
 
-**Step 4:** When you're finished, stop the monitoring session
+**Step 4:** Launch the slow control dashboard
+
+**Step 5:** When you're finished, stop the monitoring session
 
 #################################################################################
 
 **Step 1: LAUNCH A MONITORING SESSION ON THE LARPIX RASPBERRY PI** 
 
 #################################################################################
+
+Before launching a session: **make sure the pressure guage is on.** The control for the pressure guage is located ontop of the cryostat. 
 
 To get onto the Larpix Pi: read DUNE ND Electronics Development/Control Monitors/Larpix Slow Controls Credentials
 
@@ -46,7 +52,15 @@ If the code is running successfully you may not see a response on your terminal 
 
 #################################################################################
 
-**Step 2: CONNECT YOUR COMPUTER TO THE LAB COMPUTER (LABPIX)**
+**Step 2 (optional): LAUNCH A MONITORING SESSION ON THE LARPIX RASPBERRY PI** 
+
+#################################################################################
+
+coming soon
+
+#################################################################################
+
+**Step 3: CONNECT YOUR COMPUTER TO THE LAB COMPUTER (LABPIX)**
 
 #################################################################################
 
@@ -58,7 +72,7 @@ Notes: Change to your username and if necessary, change the 2000 in this example
 
 #################################################################################
 
-**Step 3: LAUNCH THE SLOW CONTROL DASHBOARD**
+**Step 4: LAUNCH THE SLOW CONTROL DASHBOARD**
 
 #################################################################################
 
@@ -76,7 +90,7 @@ You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) La
 
 #################################################################################
 
-**Step 4: TO STOP THE RUN** 
+**Step 5: TO STOP THE RUN** 
 
 #################################################################################
 
