@@ -28,6 +28,8 @@ The following steps are followed to monitor Larpix controls. Each step is detail
 
 #################################################################################
 
+Before launching a session: **make sure the pressure guage is on.** The control for the pressure guage is located ontop of the cryostat. 
+
 To get onto the Larpix Pi: read DUNE ND Electronics Development/Control Monitors/Larpix Slow Controls Credentials
 
 **Only one monitoring session should be launched at a time.** Use the following query in your terminal window to see if one is already running:
