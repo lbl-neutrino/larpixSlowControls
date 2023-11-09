@@ -88,7 +88,7 @@ If no session is already in progress, go to the /high-voltage/ directory on the 
 
 	python3 hv_read_write.py
 
-If the code is running successfully you may not see a response on your terminal window, but the data will begin to show up on the dashboard (Step 3).
+If the code is running successfully you may not see a response on your terminal window, but the data will begin to show up on the dashboard (Step 5).
 
 #################################################################################
 
