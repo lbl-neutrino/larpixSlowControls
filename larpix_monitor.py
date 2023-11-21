@@ -45,8 +45,13 @@ def read_level():
     # used to calibrate levels to capacitance
     sensor_length = 300
     min_cap = 1.0646713
+<<<<<<< HEAD
     max_cap = 9.5106614                    # small bucket w sensor diagonal
 #    max_cap = 3.6808461                   # this value for large bucket is not right
+=======
+#    max_cap = 9.5106614                    # small bucket w sensor diagonal
+    max_cap = 3.6808461                     # large bucket w sensor vertical
+>>>>>>> 1e273dd8bbb3051ed1ed21e896e9c8dde2d6b235
 
     while len(caps) < num_test:             # read capacitance from cdc
         val = bus.read_i2c_block_data(i2c_addr,0,19)
