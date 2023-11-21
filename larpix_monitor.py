@@ -1,12 +1,13 @@
 ####################################################################
-# Monitor the temperature, level of liquid and pressure in the larpix
-# cryostat. Write the data to the InfluxDB database on labpix
+# Monitor the temperature, level of liquid, pressure and heat supplied to 
+# the larpix cryostat. Write the data to the InfluxDB database on labpix
+# for monitoring by grafana
 ####################################################################
 
 # used to get mean and median of ADC readings
 import numpy as np
 
-# influxDB is the database on labpix used by grafana
+# influxDB is the database on labpix used by grafana to monitor controls
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -19,6 +20,13 @@ spi = spidev.SpiDev()           # abbreviate spidev
 # raspberry pi's USB port
 import serial
 
+# pyvisa contains a library of commands used to communicate with the 
+# Rigol DP932U that supplies power to the heating strips. Before it 
+# will work you must install pyusb, pyvisa, and pyvisa-py on the server.
+import pyvisa
+
+import time
+
 ######################################################################
 # Functions
 ######################################################################
@@ -27,7 +35,7 @@ import serial
 # (capacitance to digital converter). To improve precision this routine 
 # reads capacitance 10 times, takes the median of every 5, and then 
 # averages the medians.
-def read_cdc():
+def read_level():
 
     num_test = 10                           # number of cdc readings
     num_median = 5                          # size of the median set
@@ -37,8 +45,8 @@ def read_cdc():
     # used to calibrate levels to capacitance
     sensor_length = 300
     min_cap = 1.0646713
-#    max_cap = 9.5106614                    # small bucket w sensor diagonal
-    max_cap = 3.3422823                     # large bucket w sensor vertical
+    max_cap = 9.5106614                    # small bucket w sensor diagonal
+#    max_cap = 3.6808461                   # this value for large bucket is not right
 
     while len(caps) < num_test:             # read capacitance from cdc
         val = bus.read_i2c_block_data(i2c_addr,0,19)
@@ -67,10 +75,9 @@ def read_cdc():
     return level
 
 # get a new temperature reading from the ADC
-def read_adc():
+def read_tempers():
 
     # initialize variables
-    global t_start, new_ts
     write = 0
     read = 1            # command to read from ADC
     address_status = 0  # ADC status is available on register 0
@@ -116,36 +123,29 @@ def read_adc():
         # Determine resistance for the sensor reading
         resistance = 91.02 + (42.94 - 91.02) * (decimal_result - adc_910) / (adc_429 - adc_910)
 
-        # Convert resistance to temperature via interp function from
-        # previously opened file convert_resistance_to_termperature.py,
-        # First check range(19,390) which is necessary for the function
+        # Convert resistance to temperature in Celcius (via interpolation
+        # function from convert_resistance_to_termperature.py, and 
+        # convert celcius to kelvin. First check range(19,390) which 
+        # is necessary for the conversion function to work
         if resistance < 19 or resistance > 390:
-            if len(new_ts[sensor]) > 1:
-                print(f"ADC reading {resistance} from sensor {sensor}"
-                    " not in range(19,390) \nas required by "
-                    "interp_resist_to_temp."
-                    f"\nPrevious value {new_ts[sensor][-1]} will be "
-                    "repeated.")
-                temperatures[sensor] = new_ts[sensor][-1]
-
-            else:
-                print(f"The 1st ADC reading of {resistance} from sensor"
-                    f" {sensor} not in range(19,390) \nas required by "
-                    "interp_resist_to_temp.\n0 will be assigned")
-                temperatures[sensor] = 0
-
+            print(f"ADC reading {resistance} from sensor {sensor}"
+                " not in range(19,390) \nas required by "
+                "interp_resist_to_temp.")
+            # this eroneous value is intended to alert user to a problem
+            temperatures[sensor] = 100
         else:
             temperatures[sensor] = interp_resist_to_temp(resistance)
 
     return temperatures
 
-
+# get new pressure reading
 def read_pressure():
     def read_resp():
-#        global pg
         resp = pg.read_until(b'\r')
         return str(resp.strip(b'\r').decode('utf-8'))
 
+    # pg identifies a set of functions in the imported serial library
+    # that will communicate through the pi's USB port
     global pg
 
     pg.write(b'STREAM_ON\r')
@@ -155,9 +155,49 @@ def read_pressure():
     pressure += float(resp[0].split(',')[0])
     pg.write(b'STREAM_OFF\r')
     pg.flushInput()
-#    print(f"Pressure = {pressure}")
+
     return pressure
 
+# used to turn heating strips off once t>10C
+def set_heat(vol, curr, on_off):
+
+    global power_supply
+
+    # reset the power supply
+    power_supply.write('*RST')
+    time.sleep(0.5)
+
+    power_supply.write(':INST CH1')             # identify the channel
+    time.sleep(0.5)
+    power_supply.write(f':CURR {curr}')         # set current level
+    time.sleep(0.5)
+    power_supply.write(f':VOLT {vol}')          # set voltage level
+    time.sleep(0.5)
+    power_supply.write(f':OUTP CH1,{on_off}')   # turn on/off channel
+    time.sleep(0.5)
+    power_supply.write(':INST CH2')             # repeat for channel 2
+    time.sleep(0.5)
+    power_supply.write(f':CURR {curr}')
+    time.sleep(0.5)
+    power_supply.write(f':VOLT {vol}')
+    time.sleep(0.5)
+    power_supply.write(f':OUTP CH2,{on_off}')
+
+# measure the power being supplied to the heating strips
+def read_heat():
+
+    global power_supply
+    power1, power2 = 0,0
+
+    # measure power supplied to heat strip 1 and 2
+    power1 = power_supply.query(':MEAS:POWE? CH1')
+    power1 = float(str(power1.strip('\n\r')))
+
+    power2 = power_supply.query(':MEAS:POWE? CH2')
+    power2 = float(str(power2.strip('\n\r')))
+
+    return power1, power2
+    
 ####################################################################
 # Open files to initialize sensors or convert resistance to temperature
 ####################################################################
@@ -166,7 +206,7 @@ def read_pressure():
 with open("convert_resistance_to_temperature.py") as convert_r:
     exec(convert_r.read())
 
-# initialize CDC registers to measure levels
+# initialize CDC registers to measure liquid level
 with open("init_cdc.py") as init_l:
     exec(init_l.read())
 
@@ -182,16 +222,24 @@ pg = serial.Serial('/dev/ttyUSB0', 9600, 8, 'N', 1, timeout=1)
 with open("init_pressure.py") as init_p:
     exec(init_p.read())
 
+# Connect to the heating strip power supply
+usb_heat = 'USB0::6833::42152::DP9C243500285::0::INSTR' # ID the port
+rm = pyvisa.ResourceManager('@py')          # abreviate resource mgr
+power_supply = rm.open_resource(usb_heat)   # connect to the usb port
+
 ######################################################################
 # set global variables
 ######################################################################
 
-# sensors
+# level and temperature sensors
 level = 0
 tempers = []
 t_labels = ["t_cryo_bottom","t_under_bucket","t_sensor1", "t_sensor2",
             "t_sensor3","t_top_plate"]
 run = 0
+
+# power supplied to the heating strips
+heat1, heat2 = 0,0
 
 # The following variables are needed to push data into Influxdb, the 
 # database on labpix used to feed grafana
@@ -211,22 +259,40 @@ write_api = client.write_api(write_options=SYNCHRONOUS)
 while(run == 0):
 
     # get new level value from cdc
-    level = read_cdc()  # read a new value from cdc
+    level = read_level()  # read a new value from cdc
 
-    # write level to influxDB
+    # send level to influxDB
     p = influxdb_client.Point("larpix_slow_controls").field("level", level)
     write_api.write(bucket=bucket, org=org, record=p)
 
     # get 6 new temperature values from adc
-    tempers = read_adc()
+    tempers = read_tempers()
 
-    # write temperatures to influxdb
+    # send temperatures to influxdb
     for i in range(0,6):
         p = influxdb_client.Point("larpix_slow_controls").field(t_labels[i], tempers[i])
         write_api.write(bucket=bucket, org=org, record=p)
 
+    # get power supplied by DP932U to heat strips
+    heat1, heat2 = read_heat()
+    
+    # if the temperature at the bottom of the cryostat (tempers[0])
+    # gets above 0K, wait 5s, test again, if still > 0K (i.e. 
+    # not an eroneous reading) then turn off heating strips
+    if ((heat1 or heat2) > 1) and (tempers[2] > 0): 
+        time.sleep(5)
+        if tempers[2] > 0:
+            set_heat(0,0,0)
+            heat1, heat2 = read_heat()
+
+    # send power supplied to heat strips into influxdb
+    p = influxdb_client.Point("larpix_slow_controls").field("heat_power1", heat1)
+    write_api.write(bucket=bucket, org=org, record=p)
+    p = influxdb_client.Point("larpix_slow_controls").field("heat_power2", heat2)
+    write_api.write(bucket=bucket, org=org, record=p)
+
     # read pressure
     pressure = read_pressure()
-    # write level to influxDB
+    # write pressure to influxDB
     p = influxdb_client.Point("larpix_slow_controls").field("pressure", pressure)
     write_api.write(bucket=bucket, org=org, record=p)

@@ -7,7 +7,7 @@ import time
 # tabulate formats tabled output which we'll use to check register settings
 from tabulate import tabulate
 
-# An SPI (Serial Peripheral Interface bus) transports information to or 
+# An SPI (Serial Periphezral Interface bus) transports information to or 
 # from the AD7124-8
 import spidev
 spi = spidev.SpiDev()           # abreviate spidev
