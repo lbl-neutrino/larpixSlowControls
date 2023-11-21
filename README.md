@@ -170,7 +170,7 @@ To exit the larpix-control screen:
 
 #################################################################################
 
-**Step 7: TO STOP THE MONITORING SESSION** 
+**Step 7: STOP THE MONITORING SESSION** 
 
 #################################################################################
 
