@@ -9,15 +9,16 @@
 #      A0   =   current reading       TB5         orange     voltage[0]
 #      A1   =   voltage reading       TB6         blue       voltage[1]
 #      A2   =   current setting       TB9         green      voltage[2]
-#      A3   =   voltage setting       TB10        red        voltage[3]
+#      A3   =   voltage setting       TB11        red        voltage[3]
 ########################################################################
 
 import time
 
-# Import ADS1x15 command library to read high voltages from adc
+# Import ADS1x15 command library to read high voltages via ADC
 import Adafruit_ADS1x15
 
-# influxDB is the database on labpix connected to grafana
+# influxDB is the database on labpix connected to grafana (the graphical
+# interface used to monitor slow controls)
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -55,14 +56,19 @@ GAIN = 2
 #           860                     10-8
 DATA_RATE = 8
 
-# calibration constants for voltage measurements
+# calibration constants for voltage measurements are slightly different
+# because resistors (on ADC) are slightly different
 calibrations = [0,0,0,0]
 calibrations[0] = 1/3201.9
 calibrations[1] = 1/3201.3
 calibrations[2] = 1/3210.3
 calibrations[3] = 1/3207.6
 
-# create 2 lists of voltage values 
+# voltage and current readings from pins on back of power supply must be 
+# converted to get the actual voltage and current sent inside cryo 
+conversions =  [0.0333/1_000_000, 3, 0.0333/1_000_000, 3]
+
+# create 2 lists of voltage values
 pre_calibrations = [0]*4
 voltages = [0]*4
 resistance = 0
@@ -82,7 +88,7 @@ client = influxdb_client.InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 write_api = client.write_api(write_options=SYNCHRONOUS)
 
 ########################################################################
-# Main loop
+# Main
 ########################################################################
 
 while True:
@@ -90,8 +96,8 @@ while True:
     for i in range(4):
         pre_calibrations[i] = adc.read_adc(i, gain=GAIN, data_rate=DATA_RATE)
 
-        # Calibrate voltage for resistor variation
-        voltages[i] = pre_calibrations[i] * calibrations[i]
+        # Calibrate for resistor variation and pin-to-actual values
+        voltages[i] = pre_calibrations[i] * calibrations[i] * conversions[i]
 
         # create a data point (p) which identifyies the measurement
         # category (measurement = "larpix_slow_controls"), name and value
@@ -101,7 +107,7 @@ while True:
         # push the point into the identified InfluxDB account 
         write_api.write(bucket=bucket, org=ORG, record=p1)
 
-# use "try" to avoid dividing by zero if no current is detected
+    # use "try" to avoid dividing by zero if no current is detected
     try: 
 
         # measure resistance along cable carrying current btwn cathode & anode) 
