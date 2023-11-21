@@ -6,31 +6,31 @@
 
 The code in this repository creates a user interface for monitoring larpix cryostat controls, including:  
 
-(i) level of liquid, 
+(i) liquid level, 
 
-(ii) temperature at cryostat bottom, bucket bottom, cryostat top plate, and 3 optional temperature sensors which can be placed on test subjects
+(ii) temperature on 6 sensors
 
 (iii) pressure inside cryostat
 
-(iv) high-voltage and/or current supplied to a test subject such as a TPC (this is optional depending on the test being performed)
+(iv) high-voltage and/or current supplied to a test subject (optional)
 
-(v) power being supplied to heating strips
+(v) power supplied to heating strips
 
-The following steps are taken to monitor Larpix controls. Each step is detailed in subsequent sections.
+Steps (detailed below) to monitor Larpix controls:
 
-**Step 1:** Turn on the two pi's, pressure guage
+**Step 1:** Turn on two Raspberry Pi's and pressure guage
 
-**Step 2:** Launch a monitoring session on the cryo-control Raspberry Pi using an accessable screen
+**Step 2:** Launch monitoring session on cryo-control Raspberry Pi using an accessable screen
 
-**Step 3 (optional):** Launch high voltage monitoring on the hv-control Raspberry Pi, then turn on HV supply
+**Step 3 (optional):** Launch high voltage monitoring on hv-control Raspberry Pi, then turn on HV supply
 
-**Step 4:** Connect a port on your computer to localhost:3000 on the lab computer (Labpix)
+**Step 4:** Connect port on your computer to localhost:3000 on Labpix
 
 **Step 5:** Launch the Larpix Slow Control dashboard
 
 **Step 6:** When you're finished testing, turn on heating strips 
 
-**Step 7:** Stop the monitoring session when cryo temp reaches room temp
+**Step 7:** Stop monitoring when cryo temp reaches room temp
 
 #################################################################################
 
@@ -38,56 +38,63 @@ The following steps are taken to monitor Larpix controls. Each step is detailed 
 
 #################################################################################
 
-If you do not turn on these devices the monitoring python code may not run.
+If you do not provide power to the following devices the python code may not run.
 
-- The cryo-control Raspberry Pi is sitting ontop of the cryostat with a power button on its case. 
+- cryo-control Raspberry Pi sits ontop of cryostat with power button on its case
 
-- The hv-control Raspberry Pi is sitting ontop of the Spellman power supply in the rack next to the cryostat. Its power button is on the pi's power cable which is strapped to the rack just next to the pi. This pi should be turned on whether or not you are supplying voltage and/or current to your test subject.
+- hv-control Raspberry Pi sits ontop of Spellman power supply in rack next to cryostat. The power button is on its power cable (strapped to rack just next to pi). Turn on pi whether or not you're supplying voltage or current to test subject.
 
-- A pressure guage monitor is mounted to the top of the cryostat with its own power button.
+- Pressure guage monitor is mounted to cryostat top with a power button.
 
-#################################################################################
-
-**Step 2: LAUNCH A MONITORING SESSION ON THE cryo-control RASPBERRY PI** 
+- The Rigol power supply sits on the shelf above the bench next to the cryostat (facing the door). Make sure it is turned OFF if you do not wish to supply power to the heating strips.
 
 #################################################################################
 
-The cryo-control pi is used to monitor all controls other than the high voltage and/or current supplied to a test subject. 
+**Step 2: LAUNCH A MONITORING SESSION ON cryo-control RASPBERRY PI** 
 
-Instructions for logging into the cryo-control Raspberry Pi are in the file: DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Slow Controls Credentials
+#################################################################################
 
-**Only one monitoring session should be launched at a time.** Use the following query in your terminal window to see if one is already running:
+cryo-control pi is used to monitor all controls other than voltage/current supplied to test subject. 
 
-	ps -ef
+Instructions for logging into the cryo-control Raspberry Pi are in the file: DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Slow Controls Credentials.
+
+**Only one monitoring session should be launched at a time.** Check to see if a monitoring screen named larpix-control is already running:
+
+	screen -list
+
+If not, create a new one:
+
+	screen -S larpix-control
+
+Alternatively you can connect to an exiting screen:
+
+	screen -xS larpix-control
+
+Double check to make sure the monitoring python code is not already running on someone elses terminal:
+
+	ps -a 
+
+If there is more than one python process running, get the name of the files running:
+
+	ps -ef 
 
 Amongst the resulting list, look for a line with "larpix_monitor.py" on the end. Example:
 
 	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 larpix_monitor.py
 
-If no session is already in progress, go to the /slowcontrols/ directory on the Pi and launch a screen that will be accessable to anyone:
+Kill any code running outside of the larpix-control screen. In this example:
 
-You can check the running screen sessions via:
+	kill 13762
 
-	screen -list
-
-If either of these are missing, you can create a new session with
-
-	screen -S <crs-dqm or crs-dqm-plotly>
-
-To connect to an existing session,
-
-	screen -xS <crs-dqm or crs-dqm-plotly>
-
-To start the live DQM processes, enter the following from their respective screen sessions:
-
-	cd /home/daq/PACMANv1rev3b/larpix-monitor
-	./launch.sh
-
-run the following python code:
+To start a new monitoring session (in the larpix-control screen), go into the slowcontrols/ directory:
 
 	python3 larpix_monitor.py
 
 If the code is running successfully you may not see a response on your terminal window, but the data will begin to show up on the dashboard (Step 5).
+
+To exit the larpix-control screen:
+
+ 	hit Ctrl+a and then d
 
 #################################################################################
 
@@ -95,23 +102,13 @@ If the code is running successfully you may not see a response on your terminal 
 
 #################################################################################
 
-The hv-control pi is used to monitor the voltage and/or current supplied to a test subject. 
+The hv-control pi is used to monitor the voltage and/or current supplied to a test subject. If the Spellman HV supply is not turned on, the python code will not run. 
 
 Instructions for logging into the hv-control Raspberry Pi are in the file: DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Slow Controls Credentials
 
-**Only one monitoring session should be launched at a time.** Use the following query in your terminal window to see if one is already running:
+**Only one monitoring session should be launched at a time.** 
 
-	ps -ef
-
-Amongst the resulting list, look for a line with "hv_read_write.py" on the end. Example:
-
-	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 hv_read_write.py
-
-If no session is already in progress, go to the /high-voltage/ directory on the Pi and run the following python code:
-
-	python3 hv_read_write.py
-
-If the code is running successfully you may not see a response on your terminal window, but the data will begin to show up on the dashboard (Step 5).
+Follow the same instructions as in Step 2, replacing the accessable screen name with "hv-control" and the python script with "hv_read_write.py"
 
 #################################################################################
 
@@ -145,11 +142,45 @@ You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) La
 
 #################################################################################
 
+**Step 6: TURN ON HEATING STRIPS** 
+
+#################################################################################
+
+A Rigol DP932U power supply sits on the shelf above the bench next to the cryostat (facing the door). It's connected to two heating strips inside the cryo via wires plugged into channels 1 and 2. Turn on the power supply and set the voltage and current on both channels to:
+
+	Heat-strip voltage = 32V
+	
+	Heat-strip current = 3A
+
+Get onto the larpix-control screen on the cryo-control raspberry pi:
+
+	screen -xS larpix-control
+
+To turn on the heating strips (in the larpix-control screen), go into the slowcontrols/ directory:
+
+	python3 heat_on.py
+
+If the code is running successfully the power data will be displayed on the dashboard.
+
+The power to the heating strips should turn off automatically when the temperature sensor on the top plate reaches 273 K. However, someone should monitor the temperature and power to the strips in case the automatic shut off malfunctions. 
+
+To exit the larpix-control screen:
+
+ 	hit Ctrl+a and then d
+
+#################################################################################
+
 **Step 7: TO STOP THE MONITORING SESSION** 
 
 #################################################################################
 
-You must be on the cryo-control raspberry pi (instructions above) to stop the monitoring session. Type the follwoing into a terminal window:
+Continue monitoring until the temperature in the cryostat has reached a safe level to open the lid (we suggest T > 273K).
+
+You must be on the cryo-control raspberry pi (instructions above) to stop the monitoring session. Get on the accessable screen running the monitoring code:
+
+	screen -xS larpix-control
+
+Type the follwoing into the terminal window:
 
 	ps -ef
 
@@ -157,6 +188,14 @@ Amongst the resulting list, look for a line with "larpix_monitor.py" on the end.
 
 	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 larpix_monitor.py
 
-In this example, you would type "kill 13762 <return>" in the terminal window to stop the monitoring session.
+Stop the monitoring code (using this example):
 
-Follow the same steps on the hv-control raspberry pi to kill hv_read_write.py
+	kill 13762
+
+Follow the same steps to kill "heat_on.py"
+
+Kill the accessable screen:
+
+	<Ctl>+a k
+
+If applicable, follow the same steps on the hv-control raspberry pi to kill "hv_read_write.py"
