@@ -1,5 +1,5 @@
 ####################################################################
-# Monitor the temperature, level of liquid, pressure and heat supplied to 
+# Monitor the temperature, level of liquid, and pressure inside  
 # the larpix cryostat. Write the data to the InfluxDB database on labpix
 # for monitoring by grafana
 ####################################################################
@@ -19,11 +19,6 @@ spi = spidev.SpiDev()           # abbreviate spidev
 # serial is used to read/write data to the pressure gauge through the
 # raspberry pi's USB port
 import serial
-
-# pyvisa contains a library of commands used to communicate with the 
-# Rigol DP932U that supplies power to the heating strips. Before it 
-# will work you must install pyusb, pyvisa, and pyvisa-py on the server.
-import pyvisa
 
 import time
 
@@ -123,7 +118,7 @@ def read_tempers():
         # Determine resistance for the sensor reading
         resistance = 91.02 + (42.94 - 91.02) * (decimal_result - adc_910) / (adc_429 - adc_910)
 
-        # Convert resistance to temperature in Celcius (via interpolation
+        # Convert resistance to temperature in Celsius (via interpolation
         # function from convert_resistance_to_termperature.py, and 
         # convert celcius to kelvin. First check range(19,390) which 
         # is necessary for the conversion function to work
@@ -134,7 +129,7 @@ def read_tempers():
             # this eroneous value is intended to alert user to a problem
             temperatures[sensor] = 100
         else:
-            temperatures[sensor] = interp_resist_to_temp(resistance)
+            temperatures[sensor] = interp_resist_to_temp(resistance) + 273.15
 
     return temperatures
 
@@ -157,46 +152,6 @@ def read_pressure():
     pg.flushInput()
 
     return pressure
-
-# used to turn heating strips off once t>10C
-def set_heat(vol, curr, on_off):
-
-    global power_supply
-
-    # reset the power supply
-    power_supply.write('*RST')
-    time.sleep(0.5)
-
-    power_supply.write(':INST CH1')             # identify the channel
-    time.sleep(0.5)
-    power_supply.write(f':CURR {curr}')         # set current level
-    time.sleep(0.5)
-    power_supply.write(f':VOLT {vol}')          # set voltage level
-    time.sleep(0.5)
-    power_supply.write(f':OUTP CH1,{on_off}')   # turn on/off channel
-    time.sleep(0.5)
-    power_supply.write(':INST CH2')             # repeat for channel 2
-    time.sleep(0.5)
-    power_supply.write(f':CURR {curr}')
-    time.sleep(0.5)
-    power_supply.write(f':VOLT {vol}')
-    time.sleep(0.5)
-    power_supply.write(f':OUTP CH2,{on_off}')
-
-# measure the power being supplied to the heating strips
-def read_heat():
-
-    global power_supply
-    power1, power2 = 0,0
-
-    # measure power supplied to heat strip 1 and 2
-    power1 = power_supply.query(':MEAS:POWE? CH1')
-    power1 = float(str(power1.strip('\n\r')))
-
-    power2 = power_supply.query(':MEAS:POWE? CH2')
-    power2 = float(str(power2.strip('\n\r')))
-
-    return power1, power2
     
 ####################################################################
 # Open files to initialize sensors or convert resistance to temperature
@@ -222,11 +177,6 @@ pg = serial.Serial('/dev/ttyUSB0', 9600, 8, 'N', 1, timeout=1)
 with open("init_pressure.py") as init_p:
     exec(init_p.read())
 
-# Connect to the heating strip power supply
-usb_heat = 'USB0::6833::42152::DP9C243500285::0::INSTR' # ID the port
-rm = pyvisa.ResourceManager('@py')          # abreviate resource mgr
-power_supply = rm.open_resource(usb_heat)   # connect to the usb port
-
 ######################################################################
 # set global variables
 ######################################################################
@@ -237,9 +187,6 @@ tempers = []
 t_labels = ["t_cryo_bottom","t_under_bucket","t_sensor1", "t_sensor2",
             "t_sensor3","t_top_plate"]
 run = 0
-
-# power supplied to the heating strips
-heat1, heat2 = 0,0
 
 # The following variables are needed to push data into Influxdb, the 
 # database on labpix used to feed grafana
@@ -272,24 +219,6 @@ while(run == 0):
     for i in range(0,6):
         p = influxdb_client.Point("larpix_slow_controls").field(t_labels[i], tempers[i])
         write_api.write(bucket=bucket, org=org, record=p)
-
-    # get power supplied by DP932U to heat strips
-    heat1, heat2 = read_heat()
-    
-    # if the temperature at the bottom of the cryostat (tempers[0])
-    # gets above 0K, wait 5s, test again, if still > 0K (i.e. 
-    # not an eroneous reading) then turn off heating strips
-    if ((heat1 or heat2) > 1) and (tempers[2] > 0): 
-        time.sleep(5)
-        if tempers[2] > 0:
-            set_heat(0,0,0)
-            heat1, heat2 = read_heat()
-
-    # send power supplied to heat strips into influxdb
-    p = influxdb_client.Point("larpix_slow_controls").field("heat_power1", heat1)
-    write_api.write(bucket=bucket, org=org, record=p)
-    p = influxdb_client.Point("larpix_slow_controls").field("heat_power2", heat2)
-    write_api.write(bucket=bucket, org=org, record=p)
 
     # read pressure
     pressure = read_pressure()
