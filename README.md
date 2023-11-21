@@ -14,33 +14,37 @@ The code in this repository creates a user interface for monitoring larpix cryos
 
 (iv) high-voltage and/or current supplied to a test subject such as a TPC (this is optional depending on the test being performed)
 
+(v) power being supplied to heating strips
+
 The following steps are taken to monitor Larpix controls. Each step is detailed in subsequent sections.
 
-**Step 1:** Turn on the pi's and pressure guage
+**Step 1:** Turn on the two pi's, pressure guage
 
-**Step 2:** Launch a monitoring session on the cryo-control Raspberry Pi
+**Step 2:** Launch a monitoring session on the cryo-control Raspberry Pi using an accessable screen
 
-**Step 3 (optional):** Launch the monitoring of high voltage on the drizzle Raspberry Pi
+**Step 3 (optional):** Launch high voltage monitoring on the hv-control Raspberry Pi, then turn on HV supply
 
-**Step 4:** Connect your computer to the lab computer (Labpix)
+**Step 4:** Connect a port on your computer to localhost:3000 on the lab computer (Labpix)
 
-**Step 5:** Launch the slow control dashboard
+**Step 5:** Launch the Larpix Slow Control dashboard
 
-**Step 6:** When you're finished, stop the monitoring session
+**Step 6:** When you're finished testing, turn on heating strips 
 
-#################################################################################
-
-**Step 1: TURN ON THE PIS AND PRESSURE GUAGE** 
+**Step 7:** Stop the monitoring session when cryo temp reaches room temp
 
 #################################################################################
 
-If you do not turn on all 3 of the following devices the monitoring python code will not run.
+**Step 1: TURN ON THE TWO PIS AND PRESSURE GUAGE** 
+
+#################################################################################
+
+If you do not turn on these devices the monitoring python code may not run.
 
 - The cryo-control Raspberry Pi is sitting ontop of the cryostat with a power button on its case. 
 
-- The hv-control Raspberry Pi is sitting ontop of the Spellman power supply in the rack next to the cryostat. Its power button is on its power cable which is strapped to the rack just next to the pi. This pi should be turned on whether or not you are supplying voltage and/or current to your test subject. 
+- The hv-control Raspberry Pi is sitting ontop of the Spellman power supply in the rack next to the cryostat. Its power button is on the pi's power cable which is strapped to the rack just next to the pi. This pi should be turned on whether or not you are supplying voltage and/or current to your test subject.
 
-- A pressure guage control monitor is mounted to the top of the cryostat with its own power button.
+- A pressure guage monitor is mounted to the top of the cryostat with its own power button.
 
 #################################################################################
 
@@ -48,7 +52,7 @@ If you do not turn on all 3 of the following devices the monitoring python code 
 
 #################################################################################
 
-The cryo-control pi is used to monitor all controls other than the voltage and/or current supplied to a test subject. 
+The cryo-control pi is used to monitor all controls other than the high voltage and/or current supplied to a test subject. 
 
 Instructions for logging into the cryo-control Raspberry Pi are in the file: DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Slow Controls Credentials
 
@@ -60,7 +64,26 @@ Amongst the resulting list, look for a line with "larpix_monitor.py" on the end.
 
 	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 larpix_monitor.py
 
-If no session is already in progress, go to the /slowcontrols/ directory on the Pi and run the following python code:
+If no session is already in progress, go to the /slowcontrols/ directory on the Pi and launch a screen that will be accessable to anyone:
+
+You can check the running screen sessions via:
+
+	screen -list
+
+If either of these are missing, you can create a new session with
+
+	screen -S <crs-dqm or crs-dqm-plotly>
+
+To connect to an existing session,
+
+	screen -xS <crs-dqm or crs-dqm-plotly>
+
+To start the live DQM processes, enter the following from their respective screen sessions:
+
+	cd /home/daq/PACMANv1rev3b/larpix-monitor
+	./launch.sh
+
+run the following python code:
 
 	python3 larpix_monitor.py
 
@@ -122,7 +145,7 @@ You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) La
 
 #################################################################################
 
-**Step 6: TO STOP THE MONITORING SESSION** 
+**Step 7: TO STOP THE MONITORING SESSION** 
 
 #################################################################################
 
