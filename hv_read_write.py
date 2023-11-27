@@ -88,7 +88,7 @@ client = influxdb_client.InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 write_api = client.write_api(write_options=SYNCHRONOUS)
 
 ########################################################################
-# Main
+#                               Main
 ########################################################################
 
 while True:
