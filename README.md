@@ -4,7 +4,7 @@
 
 #################################################################################
 
-The code in this repository creates a user interface for monitoring larpix cryostat controls, including:  
+The code in this repository creates a user interface for monitoring larpix cryostat controls, including:
 
 (i) liquid level, 
 
@@ -16,7 +16,7 @@ The code in this repository creates a user interface for monitoring larpix cryos
 
 (v) power supplied to heating strips
 
-Steps (detailed below) to monitor Larpix controls:
+Steps (detailed below) to monitor Larpix controls include:
 
 **Step 1:** Turn on two Raspberry Pi's and pressure guage
 
@@ -54,7 +54,7 @@ If you do not provide power to the following devices the python code may not run
 
 #################################################################################
 
-cryo-control pi is used to monitor all controls other than voltage/current supplied to test subject. 
+cryo-control pi is used to monitor all controls other than the high-voltage/current supplied to test subjects. 
 
 Instructions for logging into the cryo-control Raspberry Pi are in the file: DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Slow Controls Credentials.
 
@@ -86,7 +86,7 @@ Kill any code running outside of the larpix-control screen. In this example:
 
 	kill 13762
 
-To start a new monitoring session (in the larpix-control screen), go into the slowcontrols/ directory:
+To start a new monitoring session (in the larpix-control screen), go into the slowcontrols/ directory and type:
 
 	python3 larpix_monitor.py
 
@@ -102,7 +102,7 @@ To exit the larpix-control screen:
 
 #################################################################################
 
-The hv-control pi is used to monitor the voltage and/or current supplied to a test subject. If the Spellman HV supply is not turned on, the python code will not run. 
+The hv-control pi is used to monitor the voltage and/or current supplied to test subjects. If the Spellman HV supply is not turned on, the python code will not run. 
 
 Instructions for logging into the hv-control Raspberry Pi are in the file: DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Slow Controls Credentials
 
@@ -116,7 +116,9 @@ Follow the same instructions as in Step 2, replacing the accessable screen name 
 
 #################################################################################
 
-Connect a port on your computer to port 3000 on Labpix by typing the following text into a terminal window:
+If you wish to launch a monitor from your labpix account you can skip this step. 
+
+If you wish to lauch a monitor on a local computer, connect a port on your computer to port 3000 on Labpix by typing the following text into a terminal window:
 
 	ssh -L 2000:localhost:3000 username@labpix.dhcp.lbl.gov
 
@@ -128,7 +130,7 @@ Notes: Change to your username and if necessary, change the 2000 in this example
 
 #################################################################################
 
-Open a web browser on your computer and go to the portal you configured in Step 4. In this example, you would type the following into your web browser:
+Open a web browser on your computer (or labpix) and go to the portal you configured in Step 4. In this example, you would type the following into your web browser address line:
 
 	localhost:2000
 
@@ -138,31 +140,33 @@ At the top of the Grafana window is a search panel. Search for:
 
  	Larpix Slow Controls
 
-You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) Larpix Slow Controls - Editable. If you wish to play with the dashboard go to the editable version. If you wish to save your changes to the dashboard please save a version under your own name. For example, "Larpix Slow Controls - cmcnulty". Save your version by clicking on the gear symbol at the top of the dashboard. This will take you to a new page where you can configure certain parameters. Click on the "Save as" button at the top. 
+You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) Larpix Slow Controls - Editable. If you wish to play with the dashboard go to the editable version. If you wish to save your changes please save a version under your own name. For example, "Larpix Slow Controls - cmcnulty". Save your version by clicking on the gear symbol at the top of the dashboard. This will take you to a new page where you can configure certain parameters. Click on the "Save as" button at the top. 
 
 #################################################################################
 
-**Step 6: TURN ON HEATING STRIPS** 
+**Step 6: WHEN YOU'RE FINISHED TESTING, TURN ON HEATING STRIPS** 
 
 #################################################################################
 
-A Rigol DP932U power supply sits on the shelf above the bench next to the cryostat (facing the door). It's connected to two heating strips inside the cryo via wires plugged into channels 1 and 2. Turn on the power supply and set the voltage and current on both channels to:
+A Rigol DP932U power supply sits on the shelf above the bench next to the cryostat (facing the door). It's connected to two heating strips inside the cryo via 4 wires plugged into channels 1 and 2. These heating strips will speed up the liquid evaporation process when you are finished with your tests. 
+
+Turn on the power supply and set the voltage and current on both channels to:
 
 	Heat-strip voltage = 32V
 	
 	Heat-strip current = 3A
 
-Get onto the larpix-control screen on the cryo-control raspberry pi:
+Get onto the larpix-control screen on the cryo-control raspberry pi following instructions in Step 2:
 
 	screen -xS larpix-control
 
-To turn on the heating strips (in the larpix-control screen), go into the slowcontrols/ directory:
+To turn on the heating strips (in the larpix-control screen), go into the slowcontrols/ directory and type:
 
 	python3 heat_on.py
 
 If the code is running successfully the power data will be displayed on the dashboard.
 
-The power to the heating strips should turn off automatically when the temperature sensor on the top plate reaches 273 K. However, someone should monitor the temperature and power to the strips in case the automatic shut off malfunctions. 
+The power to the heating strips should turn off automatically when the temperature sensor on either the top plate or bottom of cryo reaches 273 K. However, someone should monitor the temperature and power to the strips in case the automatic shut off mechanism malfunctions. 
 
 To exit the larpix-control screen:
 
