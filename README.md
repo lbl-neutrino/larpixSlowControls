@@ -56,7 +56,7 @@ If you do not provide power to the following devices the python code may not run
 
 cryo-control pi is used to monitor all controls other than the high-voltage/current supplied to test subjects. 
 
-Instructions for logging into the cryo-control Raspberry Pi are in the file: DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Slow Controls Credentials.
+Instructions for logging into the cryo-control Raspberry Pi are in the file: DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Control Credentials.
 
 **Only one monitoring session should be launched at a time.** Check to see if a monitoring screen named larpix-control is already running:
 
