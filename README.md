@@ -4,7 +4,7 @@
 
 #################################################################################
 
-The code in this repository creates a user interface for monitoring larpix cryostat controls, including:
+The code in this repository creates a user interface for monitoring Building 70/141 cryostat controls, including:
 
 (i) liquid level, 
 
@@ -20,11 +20,11 @@ Steps (detailed below) to monitor Larpix controls include:
 
 **Step 1:** Turn on two Raspberry Pi's and pressure guage
 
-**Step 2:** Launch monitoring session on cryo-control Raspberry Pi using an accessable screen
+**Step 2:** Launch monitoring session on cryo-control Raspberry Pi
 
 **Step 3 (optional):** Launch high voltage monitoring on hv-control Raspberry Pi, then turn on HV supply
 
-**Step 4:** Connect port on your computer to localhost:3000 on Labpix
+**Step 4:** Connect port on your computer to localhost:3000 on Bldg 70/141 Labpix
 
 **Step 5:** Launch the Larpix Slow Control dashboard
 
@@ -56,7 +56,7 @@ If you do not provide power to the following devices the python code may not run
 
 cryo-control pi is used to monitor all controls other than the high-voltage/current supplied to test subjects. 
 
-Instructions for logging into the cryo-control Raspberry Pi are in the file: DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Control Credentials.
+Instructions for logging into the cryo-control Raspberry Pi are in the file: DUNE ND Electronics Development / Operations / Bldg 70/141 / 70/141 Credentials Database Dashboard Pi 
 
 **Only one monitoring session should be launched at a time.** Check to see if a monitoring screen named larpix-control is already running:
 
@@ -112,11 +112,11 @@ Follow the same instructions as in Step 2, replacing the accessable screen name 
 
 #################################################################################
 
-**Step 4: CONNECT YOUR COMPUTER TO THE LAB COMPUTER (LABPIX)**
+**Step 4: CONNECT YOUR COMPUTER TO THE Bldg 70/141 LAB COMPUTER (LABPIX)**
 
 #################################################################################
 
-If you wish to launch a monitor from your labpix account you can skip this step. 
+If you wish to launch a monitor on labpix you can skip this step. 
 
 If you wish to lauch a monitor on a local computer, connect a port on your computer to port 3000 on Labpix by typing the following text into a terminal window:
 
@@ -126,7 +126,7 @@ Notes: Change to your username and if necessary, change the 2000 in this example
 
 #################################################################################
 
-**Step 5: LAUNCH THE SLOW CONTROL DASHBOARD**
+**Step 5: LAUNCH THE Bldg 70/141 SLOW CONTROL DASHBOARD**
 
 #################################################################################
 
