@@ -32,6 +32,8 @@ Steps (detailed below) to monitor Larpix controls include:
 
 **Step 7:** Stop monitoring when cryo temp reaches room temp
 
+**Troubleshooting**
+
 #################################################################################
 
 **Step 1: TURN ON THE TWO PIS AND PRESSURE GUAGE** 
@@ -203,3 +205,24 @@ Kill the accessable screen:
 	<Ctl>+a k
 
 If applicable, follow the same steps on the hv-control raspberry pi to kill "hv_read_write.py"
+
+#################################################################################
+
+**Trouble Shooting** 
+
+#################################################################################
+
+To restart Grafana on labpix:
+
+	 sudo systemctl restart grafana-server
+
+If sending data to InfluxDB is causing timeout errors, you can try putting the following script around the code where the errors are occuring.
+
+	try:
+   	    p = influxdb_client.Point("larpix_slow_controls").field("pressure", pressure)
+	except urllib3.exceptions.ReadTimeoutError:
+    	    continue
+
+That will also need (at the top): 
+
+ 	import urllib3
