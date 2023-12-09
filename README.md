@@ -219,7 +219,7 @@ To restart Grafana on labpix:
 If sending data to InfluxDB is causing timeout errors, you can try putting the following script around the code where the errors are occuring.
 
 	try:
-   	    p = influxdb_client.Point("larpix_slow_controls").field("pressure", pressure)
+   	    <problematic code ... probably a write command giving timeout errors>
 	except urllib3.exceptions.ReadTimeoutError:
     	    continue
 
