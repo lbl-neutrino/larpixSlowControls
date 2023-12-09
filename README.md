@@ -70,7 +70,7 @@ If not, create a new one:
 
 Alternatively you can connect to an exiting screen:
 
-	screen -xS larpix-control
+	screen -x larpix-control
 
 Double check to make sure the monitoring python code is not already running on someone elses terminal:
 
