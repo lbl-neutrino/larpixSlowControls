@@ -1,6 +1,6 @@
 #################################################################################
 
-**Bldg 70/141 LARPIX SLOW CONTROLS** 
+**Building 70/141 CRYOSTAT SLOW CONTROLS** 
 
 #################################################################################
 
@@ -16,19 +16,19 @@ The code in this repository creates a user interface for monitoring Building 70/
 
 (v) power supplied to heating strips
 
-Steps (detailed below) to monitor Larpix controls include:
+Steps (detailed below) to monitor Blg 70/141 cryostat controls include:
 
-**Step 1:** Turn on two Raspberry Pi's and pressure guage
+**Step 1:** Turn on devices
 
-**Step 2:** Launch monitoring session on cryo-control Raspberry Pi
+**Step 2:** Launch monitoring code
 
-**Step 3 (optional):** Launch high voltage monitoring on hv-control Raspberry Pi, then turn on HV supply
+**Step 3 (optional):** launch high voltage code
 
-**Step 4:** Connect port on your computer to localhost:3000 on Bldg 70/141 Labpix
+**Step 4:** Connect to labpix
 
-**Step 5:** Launch the Larpix Slow Control dashboard
+**Step 5:** Launch the dashboard
 
-**Step 6:** When you're finished testing, turn on heating strips 
+**Step 6:** When finished, turn on heating strips 
 
 **Step 7:** Stop monitoring when cryo temp reaches room temp
 
@@ -36,47 +36,47 @@ Steps (detailed below) to monitor Larpix controls include:
 
 #################################################################################
 
-**Step 1: TURN ON THE TWO PIS AND PRESSURE GUAGE** 
+**Step 1: TURN ON DEVICES** 
 
 #################################################################################
 
-If you do not provide power to the following devices the python code may not run.
+If you do not provide power to these devices the python code may not run.
 
 - cryo-control Raspberry Pi sits ontop of cryostat with power button on its case
 
-- hv-control Raspberry Pi sits ontop of Spellman power supply in rack next to cryostat. The power button is on its power cable (strapped to rack just next to pi). Turn on pi whether or not you're supplying voltage or current to test subject.
+- hv-control Raspberry Pi sits ontop of Spellman power supply in rack next to cryostat. The power button is on its power cable (strapped to the rack).
 
-- Pressure guage monitor is mounted to cryostat top with a power button.
+- Pressure guage monitor is mounted to cryostat top with its own power button
 
-- The Rigol power supply sits on the shelf above the bench next to the cryostat (facing the door). Make sure it is turned OFF if you do not wish to supply power to the heating strips.
-
-#################################################################################
-
-**Step 2: LAUNCH A MONITORING SESSION ON cryo-control RASPBERRY PI** 
+- The Rigol power supply for the heating strips sits on the shelf above the bench next to the cryostat (facing the door). Make sure it is turned ON and set to V=0 and I=0 (unless you're ready to heat up)
 
 #################################################################################
 
-cryo-control pi is used to monitor all controls other than the high-voltage/current supplied to test subjects. 
+**Step 2: LAUNCH A MONITORING SESSION** 
 
-Instructions for logging into the cryo-control Raspberry Pi are in the file: DUNE ND Electronics Development / Operations / Bldg 70/141 / 70/141 Credentials Database Dashboard Pi 
+#################################################################################
+
+cryo-control pi is used to monitor temperature, level, pressure and heat strip power.
+
+See Pi login instructions at: DUNE ND Electronics Development / Operations / Bldg 70/141 / 70/141 Credentials Database Dashboard Pi 
 
 **Only one monitoring session should be launched at a time.** Check to see if a monitoring screen named larpix-control is already running:
 
 	screen -list
 
-If not, create a new one:
+If not, create one:
 
 	screen -S larpix-control
 
-Alternatively you can connect to an exiting screen:
+Alternatively connect to an exiting screen:
 
 	screen -x larpix-control
 
-Double check to make sure the monitoring python code is not already running on someone elses terminal:
+Make sure the python code is not already running:
 
 	ps -a 
 
-If there is more than one python process running, get the name of the files running:
+If there is more than one python process, get the name of the files:
 
 	ps -ef 
 
@@ -88,57 +88,57 @@ Kill any code running outside of the larpix-control screen. In this example:
 
 	kill 13762
 
-To start a new monitoring session (in the larpix-control screen), go into the slowcontrols/ directory and type:
+In the slowcontrols/ directory launch a new monitoring session (in larpix-control screen!)
 
 	python3 larpix_monitor.py
 
-If the code is running successfully you may not see a response on your terminal window, but the data will begin to show up on the dashboard (Step 5).
+If the code is running successfully, the data will show up on the dashboard (Step 5).
 
-To exit the larpix-control screen:
+To exit the larpix-control screen hit:
 
- 	hit Ctrl+a and then d
+ 	Ctrl+a d
 
 #################################################################################
 
-**Step 3 (optional): LAUNCH A MONITORING SESSION ON THE hv-control RASPBERRY PI** 
+**Step 3 (optional): LAUNCH High Voltage Controls** 
 
 #################################################################################
 
 The hv-control pi is used to monitor the voltage and/or current supplied to test subjects. If the Spellman HV supply is not turned on, the python code will not run. 
 
-Instructions for logging into the hv-control Raspberry Pi are in the file: DUNE ND Electronics Development/Control Monitors/Larpix/Larpix Slow Controls Credentials
+Instructions for logging into the hv-control Raspberry Pi are in the file:  DUNE ND Electronics Development / Operations / Bldg 70/141 / 70/141 Credentials Database Dashboard Pi 
 
 **Only one monitoring session should be launched at a time.** 
 
-Follow the same instructions as in Step 2, replacing the accessable screen name with "hv-control" and the python script with "hv_read_write.py"
+Follow Step 2 using screen name "hv-control" and python code "hv_read_write.py"
 
 #################################################################################
 
-**Step 4: CONNECT YOUR COMPUTER TO THE Bldg 70/141 LAB COMPUTER (LABPIX)**
+**Step 4: CONNECT to LABPIX**
 
 #################################################################################
 
-If you wish to launch a monitor on labpix you can skip this step. 
+If you're working on labpix, skip this step. 
 
-If you wish to lauch a monitor on a local computer, connect a port on your computer to port 3000 on Labpix by typing the following text into a terminal window:
+In a terminal window, connect a port on your computer to port 3000 on Labpix:
 
-	ssh -L 2000:localhost:3000 username@labpix.dhcp.lbl.gov
+	ssh -L 3000:localhost:3000 username@labpix.dhcp.lbl.gov
 
-Notes: Change to your username and if necessary, change the 2000 in this example to any open port on your computer. 
-
-#################################################################################
-
-**Step 5: LAUNCH THE Bldg 70/141 SLOW CONTROL DASHBOARD**
+Notes: Change to your username and if necessary, change the 1st 3000 in this example to any open port on your computer. 
 
 #################################################################################
 
-Open a web browser on your computer (or labpix) and go to the portal you configured in Step 4. In this example, you would type the following into your web browser address line:
+**Step 5: LAUNCH THE DASHBOARD**
 
-	localhost:2000
+#################################################################################
 
-You should be taken to the Grafana login page. The username and password are stored in the file DUNE ND Electronics Development/Control Monitors/Larpix Slow Controls Credentials.
+In your web browser address line open the portal:
 
-At the top of the Grafana window is a search panel. Search for:
+	localhost:3000
+
+Grafana's username and password are stored in: DUNE ND Electronics Development/Control Monitors/Larpix Slow Controls Credentials.
+
+Search for:
 
  	Larpix Slow Controls
 
@@ -146,13 +146,13 @@ You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) La
 
 #################################################################################
 
-**Step 6: WHEN YOU'RE FINISHED TESTING, TURN ON HEATING STRIPS** 
+**Step 6: WHEN FINISHED, TURN ON HEATING STRIPS** 
 
 #################################################################################
 
 A Rigol DP932U power supply sits on the shelf above the bench next to the cryostat (facing the door). It's connected to two heating strips inside the cryo via 4 wires plugged into channels 1 and 2. These heating strips will speed up the liquid evaporation process when you are finished with your tests. 
 
-Turn on the power supply and set the voltage and current on both channels to:
+Set the voltage and current on both channels to:
 
 	Heat-strip voltage = 32V
 	
@@ -160,19 +160,15 @@ Turn on the power supply and set the voltage and current on both channels to:
 
 Get onto the larpix-control screen on the cryo-control raspberry pi following instructions in Step 2:
 
-	screen -xS larpix-control
+	screen -x larpix-control
 
 To turn on the heating strips (in the larpix-control screen), go into the slowcontrols/ directory and type:
 
 	python3 heat_on.py
 
-If the code is running successfully the power data will be displayed on the dashboard.
+If the code is running successfully, power data will be on the dashboard.
 
 The power to the heating strips should turn off automatically when the temperature sensor on either the top plate or bottom of cryo reaches 273 K. However, someone should monitor the temperature and power to the strips in case the automatic shut off mechanism malfunctions. 
-
-To exit the larpix-control screen:
-
- 	hit Ctrl+a and then d
 
 #################################################################################
 
@@ -182,9 +178,7 @@ To exit the larpix-control screen:
 
 Continue monitoring until the temperature in the cryostat has reached a safe level to open the lid (we suggest T > 273K).
 
-You must be on the cryo-control raspberry pi (instructions above) to stop the monitoring session. Get on the accessable screen running the monitoring code:
-
-	screen -xS larpix-control
+You must be on the cryo-control raspberry pi (instructions above) to stop the monitoring session. 
 
 Type the follwoing into the terminal window:
 
@@ -200,11 +194,7 @@ Stop the monitoring code (using this example):
 
 Follow the same steps to kill "heat_on.py"
 
-Kill the accessable screen:
-
-	<Ctl>+a k
-
-If applicable, follow the same steps on the hv-control raspberry pi to kill "hv_read_write.py"
+Follow the same steps on the hv-control raspberry pi to kill "hv_read_write.py"
 
 #################################################################################
 
@@ -212,17 +202,17 @@ If applicable, follow the same steps on the hv-control raspberry pi to kill "hv_
 
 #################################################################################
 
-If Grafana begins to consume a lot of CPU you may want to kill it and restart by using:
+If the monitoring code won't launch make sure all devices are turned on.
+
+If Grafana is consuming a lot of CPU, first try killing and relaunching the monitoring code. If that doesn't work, kill Grafana and restart it by using:
 
 	 sudo systemctl restart grafana-server
 
-If sending data to InfluxDB is causing timeout errors (one reason why Grafana struggles), you can try putting the following script around the code where the errors tend to occur.
+If sending data to InfluxDB is causing timeout errors, put the following script around the code where the errors tend to occur.
+
+	import urllib3
 
 	try:
-   	    <problematic code ... probably a write command giving timeout errors>
+   	    <problematic code giving timeout errors ... like a write command to InfluxDB>
 	except urllib3.exceptions.ReadTimeoutError:
-    	    continue
-
-You will also need to add (at the top): 
-
- 	import urllib3
+    	    continue 
