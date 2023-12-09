@@ -212,17 +212,17 @@ If applicable, follow the same steps on the hv-control raspberry pi to kill "hv_
 
 #################################################################################
 
-To restart Grafana on labpix:
+If Grafana begins to consume a lot of CPU you may want to kill it and restart by using:
 
 	 sudo systemctl restart grafana-server
 
-If sending data to InfluxDB is causing timeout errors, you can try putting the following script around the code where the errors are occuring.
+If sending data to InfluxDB is causing timeout errors (one reason why Grafana struggles), you can try putting the following script around the code where the errors tend to occur.
 
 	try:
    	    <problematic code ... probably a write command giving timeout errors>
 	except urllib3.exceptions.ReadTimeoutError:
     	    continue
 
-That will also need (at the top): 
+You will also need to add (at the top): 
 
  	import urllib3
