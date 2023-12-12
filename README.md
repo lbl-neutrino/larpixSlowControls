@@ -150,23 +150,15 @@ You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) La
 
 #################################################################################
 
-A Rigol DP932U power supply sits on the shelf above the bench next to the cryostat (facing the door). It's connected to two heating strips inside the cryo via 4 wires plugged into channels 1 and 2. These heating strips will speed up the liquid evaporation process when you are finished with your tests. 
+A Rigol DP932U power supply sits on the shelf above the bench next to the cryostat. It's connected to two heating strips inside the cryo via 4 wires plugged into Rigol channels 1 and 2. These heating strips will speed up the liquid evaporation process when you are finished testing. 
 
-Set the voltage and current on both channels to:
+Kill the monitoring process launched in Step 2 (python code larpix_monitor.py), and turn off the cryo-control Raspberry Pi. Turn off the Rigol power supply. These steps are necessary to break the remote connection between the Pi and the Rigol.
 
-	Heat-strip voltage = 32V
-	
-	Heat-strip current = 3A
+(i) Turn the Rigol back on, (ii) set the voltage and current on both channels to: voltage = 32V and current = 3A. (iii) Turn on both channel 1 and 2.
 
-Get onto the larpix-control screen on the cryo-control raspberry pi following instructions in Step 2:
+Turn the cryo-control Pi back on and relaunch the python code larpix_monitor.py.
 
-	screen -x larpix-control
-
-To turn on the heating strips (in the larpix-control screen), go into the slowcontrols/ directory and type:
-
-	python3 heat_on.py
-
-If the code is running successfully, power data will be on the dashboard.
+If the code is running successfully, the dashboard should indicate power to the heating strips of ~70W.
 
 The power to the heating strips should turn off automatically when the temperature sensor on either the top plate or bottom of cryo reaches 273 K. However, someone should monitor the temperature and power to the strips in case the automatic shut off mechanism malfunctions. 
 
