@@ -194,7 +194,7 @@ Follow the same steps on the hv-control raspberry pi to kill "hv_read_write.py"
 
 #################################################################################
 
-If the monitoring code won't launch make sure all devices are turned on.
+If the monitoring code won't launch make sure all devices are turned on (step 1). 
 
 If Grafana is consuming a lot of CPU, first try killing the monitoring python code and relaunching it. If that doesn't work, kill Grafana and restart it by using:
 
@@ -214,3 +214,17 @@ If sending data to InfluxDB is causing timeout errors, put the following script 
    	    <problematic code giving timeout errors ... for example, a write command to InfluxDB>
 	except urllib3.exceptions.ReadTimeoutError:
     	    continue 
+
+Two python scripts cannot use same 8086 port for InfluxDB. Instead set up separate containers by following steps (i) - (iii). 
+
+(i) create a directory for Influx's storage: 
+
+ 	mkdir -p ~/data/hv_influx 
+ 
+(ii) launch a container: 
+
+	podman run -d --name influx_hv -p 28086:8086 -v ~/data/hv_influx:/var/lib/influxdb2 docker.io/influxdb:2.7.3 
+ 
+The -p 28086:8086 tells podman to route labpix's port 28086 to the container's port 8086. Eventually we could potentially have slow controls, HV, and pacmon all on a single instance (perhaps with separate buckets). But while we're still in the development phase, it's safer to have separate instances.
+
+(iii) Point a browser to port 28086 and go through the initial setup screen to create a new InfluxDB account (w username/password/token)
