@@ -196,15 +196,21 @@ Follow the same steps on the hv-control raspberry pi to kill "hv_read_write.py"
 
 If the monitoring code won't launch make sure all devices are turned on.
 
-If Grafana is consuming a lot of CPU, first try killing and relaunching the monitoring code. If that doesn't work, kill Grafana and restart it by using:
+If Grafana is consuming a lot of CPU, first try killing the monitoring python code and relaunching it. If that doesn't work, kill Grafana and restart it by using:
 
 	 sudo systemctl restart grafana-server
+
+The commands to restart InfluxDB must be run as mkramer (impersonating Matt Kramer):
+
+ 	sudo su mkramer 
+
+ 	podman start influx_matt 
 
 If sending data to InfluxDB is causing timeout errors, put the following script around the code where the errors tend to occur.
 
 	import urllib3
 
 	try:
-   	    <problematic code giving timeout errors ... like a write command to InfluxDB>
+   	    <problematic code giving timeout errors ... for example, a write command to InfluxDB>
 	except urllib3.exceptions.ReadTimeoutError:
     	    continue 
