@@ -27,6 +27,9 @@ import pyvisa
 
 import time
 
+# urllib3 has functions that will help with timeout url problems
+import urllib3
+
 ######################################################################
 # Functions
 ######################################################################
@@ -42,18 +45,18 @@ def read_level():
     caps, median_levels = [], []
     cap, i, median_cap, level = 0,0,0,0
 
-    # used to calibrate levels to capacitance
-    sensor_length = 300
-    min_cap = 1.0646713
-    max_cap = 9.5106614                    # small bucket w sensor diagonal
-#    max_cap = 3.6808461                   # this value for large bucket is not right
+    # used to convert levels to capacitance
+    min_cap = 0.9520581
+    conversion_factor = 29.952523
+#    min_cap = 1.0646713                # small bucket w sensor diagonal
+#    conversion_factor = 35.5198143     # small bucket w sensor diagonal
 
     while len(caps) < num_test:             # read capacitance from cdc
         val = bus.read_i2c_block_data(i2c_addr,0,19)
         if val[0] != 7:                     # val[0]=7 is old data
             cap = val[1]*2**16 + val[2]*2**8 + val[3]
             caps.append(cap)
-
+#            print(f"cap = {cap}, reading = {val}")
     for i in range(0,len(caps),num_median):  # reduce noise using median
 
         # check to see if you have enough values left to get a median
@@ -64,8 +67,7 @@ def read_level():
         median_cap = np.median(caps[i:i+num_median])/1e6
 
         # transform capacitance into length
-        median_level = (median_cap - min_cap) * sensor_length / (max_cap 
-                        - min_cap)
+        median_level = (median_cap - min_cap) * conversion_factor
 
         # add the new value to the list of median levels
         median_levels.append(median_level)
@@ -127,12 +129,15 @@ def read_tempers():
         # function from convert_resistance_to_termperature.py, and 
         # convert celcius to kelvin. First check range(19,390) which 
         # is necessary for the conversion function to work
-        if resistance < 19 or resistance > 390:
+        if resistance <= 19 or resistance >= 390:
+            
+            # this eroneous value is intended to alert user to a problem
+            temperatures[sensor] = float(0.00)
+            
             print(f"ADC reading {resistance} from sensor {sensor}"
                 " not in range(19,390) \nas required by "
-                "interp_resist_to_temp.")
-            # this eroneous value is intended to alert user to a problem
-            temperatures[sensor] = 100
+                "interp_resist_to_temp.\nTemp set to {temperatures[sensor]")
+
         else:
             temperatures[sensor] = interp_resist_to_temp(resistance) + 273.15
 
@@ -226,7 +231,6 @@ with open("init_pressure.py") as init_p:
 usb_heat = 'USB0::6833::42152::DP9C243500285::0::INSTR' # ID the port
 rm = pyvisa.ResourceManager('@py')          # abreviate resource mgr
 power_supply = rm.open_resource(usb_heat)   # connect to the usb port
-
 ######################################################################
 # set global variables
 ######################################################################
@@ -263,16 +267,24 @@ while(run == 0):
 
     # send level to influxDB
     p = influxdb_client.Point("larpix_slow_controls").field("level", level)
-    write_api.write(bucket=bucket, org=org, record=p)
+
+    try:
+        write_api.write(bucket=bucket, org=org, record=p)
+    except urllib3.exceptions.ReadTimeoutError:
+        continue
 
     # get 6 new temperature values from adc
     tempers = read_tempers()
 
     # send temperatures to influxdb
     for i in range(0,6):
-        p = influxdb_client.Point("larpix_slow_controls").field(t_labels[i], tempers[i])
-        write_api.write(bucket=bucket, org=org, record=p)
-
+        p = influxdb_client.Point("larpix_slow_controls").field(t_labels[i], float(tempers[i]))
+    
+        try:
+            write_api.write(bucket=bucket, org=org, record=p)
+        except urllib3.exceptions.ReadTimeoutError:
+            continue
+    
     # get power supplied by DP932U to heat strips
     heat1, heat2 = read_heat()
     
@@ -281,18 +293,29 @@ while(run == 0):
     # not an eroneous reading) then turn off heating strips
     if ((heat1 or heat2) > 1) and (tempers[5] or tempers[0] > 273): 
         time.sleep(5)
-        if (tempers[5] or tempers[0]) > 0:
+        if (tempers[5] or tempers[0]) > 273:
             set_heat(0,0,0)
             heat1, heat2 = read_heat()
 
     # send power supplied to heat strips into influxdb
     p = influxdb_client.Point("larpix_slow_controls").field("heat_power1", heat1)
-    write_api.write(bucket=bucket, org=org, record=p)
+    try:
+        write_api.write(bucket=bucket, org=org, record=p)
+    except urllib3.exceptions.ReadTimeoutError:
+        continue
+
     p = influxdb_client.Point("larpix_slow_controls").field("heat_power2", heat2)
-    write_api.write(bucket=bucket, org=org, record=p)
+    try:
+        write_api.write(bucket=bucket, org=org, record=p)
+    except urllib3.exceptions.ReadTimeoutErrof:
+        continue
 
     # read pressure
     pressure = read_pressure()
     # write pressure to influxDB
     p = influxdb_client.Point("larpix_slow_controls").field("pressure", pressure)
-    write_api.write(bucket=bucket, org=org, record=p)
+    try:
+        write_api.write(bucket=bucket, org=org, record=p)
+    except urllib3.exceptions.ReadTimeoutError:
+        continue
+    

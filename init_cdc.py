@@ -15,7 +15,9 @@ time.sleep(1)
 # configure the CDC for our purposes
 bus.write_byte_data(i2c_addr,0x8,0x01) # temperature config
 bus.write_byte_data(i2c_addr,0x7,0x80) # Capacitance setup
-bus.write_byte_data(i2c_addr,0x9,0xb) # high swing exca setup
-#bus.write_byte_data(i2c_addr,0xb,0x96) # offset data
-bus.write_byte_data(i2c_addr,0xb,0xf8) # offset data
+bus.write_byte_data(i2c_addr,0x9,0x18) # high swing exca setup
+#bus.write_byte_data(i2c_addr,0xb,0x96) # offset
+bus.write_byte_data(i2c_addr,0xd,0xff) # offset
+bus.write_byte_data(i2c_addr,0xb,0x7F) # offset
 bus.write_byte_data(i2c_addr,0xa,0x39) # ADC config, continuous conversion mode
+
