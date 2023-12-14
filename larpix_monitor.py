@@ -307,7 +307,7 @@ while(run == 0):
     p = influxdb_client.Point("larpix_slow_controls").field("heat_power2", heat2)
     try:
         write_api.write(bucket=bucket, org=org, record=p)
-    except urllib3.exceptions.ReadTimeoutErrof:
+    except urllib3.exceptions.ReadTimeoutError:
         continue
 
     # read pressure
