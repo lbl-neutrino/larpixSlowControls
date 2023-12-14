@@ -66,11 +66,11 @@ See Pi login instructions at: DUNE ND Electronics Development / Operations / Bld
 
 If not, create one:
 
-	screen -S larpix-control
+	screen -S B70-control
 
 Alternatively connect to an exiting screen:
 
-	screen -x larpix-control
+	screen -x B70-control
 
 Make sure the python code is not already running:
 
