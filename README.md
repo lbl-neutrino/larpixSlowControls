@@ -1,10 +1,6 @@
-#################################################################################
+#Building 70-141 CRYOSTAT SLOW CONTROLS
 
-**Building 70/141 CRYOSTAT SLOW CONTROLS** 
-
-#################################################################################
-
-The code in this repository creates a user interface for monitoring Building 70/141 cryostat controls, including:
+This code creates a user interface for monitoring Building 70/141 cryostat controls, including:
 
 (i) liquid level, 
 
@@ -34,13 +30,9 @@ Steps (detailed below) to monitor Blg 70/141 cryostat controls include:
 
 **Troubleshooting**
 
-#################################################################################
+##Step 1: TURN ON DEVICES
 
-**Step 1: TURN ON DEVICES** 
-
-#################################################################################
-
-If you do not provide power to these devices the python code may not run.
+If you do not provide power to the following devices the python code may not run.
 
 - cryo-control Raspberry Pi sits ontop of cryostat with power button on its case
 
@@ -48,19 +40,15 @@ If you do not provide power to these devices the python code may not run.
 
 - Pressure guage monitor is mounted to cryostat top with its own power button
 
-- The Rigol power supply for the heating strips sits on the shelf above the bench next to the cryostat (facing the door). Make sure it is turned ON and set to V=0 and I=0 (unless you're ready to heat up)
+- The Rigol power supply for the heating strips sits on the shelf above the bench next to the cryostat (facing the door). Make sure it is turned ON and set to V=0 and I=0 (unless you're ready to turn on the heaters)
 
-#################################################################################
+##Step 2: LAUNCH A MONITORING SESSION
 
-**Step 2: LAUNCH A MONITORING SESSION** 
+The cryo-control raspberry pi is used to monitor temperature, level, pressure and heat strip power.
 
-#################################################################################
+See Pi login instructions at: 'DUNE ND Electronics Development / Operations / Bldg 70-141 / 70-141 Credentials Database Dashboard Pi' 
 
-cryo-control pi is used to monitor temperature, level, pressure and heat strip power.
-
-See Pi login instructions at: DUNE ND Electronics Development / Operations / Bldg 70/141 / 70/141 Credentials Database Dashboard Pi 
-
-**Only one monitoring session should be launched at a time.** Check to see if a monitoring screen named larpix-control is already running:
+**Only one monitoring session should be launched at a time.** Check to see if a monitoring screen named 'larpix-control' is already running:
 
 	screen -list
 
@@ -80,7 +68,7 @@ If there is more than one python process, get the name of the files:
 
 	ps -ef 
 
-Amongst the resulting list, look for a line with "larpix_monitor.py" on the end. Example:
+Amongst the resulting list, look for a line with 'larpix_monitor.py' on the end. Example:
 
 	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 larpix_monitor.py
 
@@ -88,35 +76,27 @@ Kill any code running outside of the larpix-control screen. In this example:
 
 	kill 13762
 
-In the slowcontrols/ directory launch a new monitoring session (in larpix-control screen!)
+In the 'slowcontrols/' directory launch a new monitoring session (in larpix-control screen!)
 
 	python3 larpix_monitor.py
 
-If the code is running successfully, the data will show up on the dashboard (Step 5).
+If the code is running successfully, the data will show up on the Grafana monitoring dashboard (Step 5).
 
 To exit the larpix-control screen hit:
 
  	Ctrl+a d
 
-#################################################################################
+##Step 3 (optional): LAUNCH High Voltage Controls
 
-**Step 3 (optional): LAUNCH High Voltage Controls** 
+The hv-control raspberry pi is used to monitor the voltage and/or current supplied to test subjects. If the Spellman HV supply is not turned on, the python code will not run. 
 
-#################################################################################
-
-The hv-control pi is used to monitor the voltage and/or current supplied to test subjects. If the Spellman HV supply is not turned on, the python code will not run. 
-
-Instructions for logging into the hv-control Raspberry Pi are in the file:  DUNE ND Electronics Development / Operations / Bldg 70/141 / 70/141 Credentials Database Dashboard Pi 
+Instructions for logging into the hv-control Raspberry Pi are in the file:  'DUNE ND Electronics Development / Operations / Bldg 70/141 / 70-141 Credentials Database Dashboard Pi' 
 
 **Only one monitoring session should be launched at a time.** 
 
-Follow Step 2 using screen name "hv-control" and python code "hv_read_write.py"
+Follow Step 2 again, but use the screen name 'hv-control' and python code 'hv_read_write.py'
 
-#################################################################################
-
-**Step 4: CONNECT to LABPIX**
-
-#################################################################################
+##Step 4: CONNECT to LABPIX
 
 If you're working on labpix, skip this step. 
 
@@ -126,47 +106,37 @@ In a terminal window, connect a port on your computer to port 3000 on Labpix:
 
 Notes: Change to your username and if necessary, change the 1st 3000 in this example to any open port on your computer. 
 
-#################################################################################
-
-**Step 5: LAUNCH THE DASHBOARD**
-
-#################################################################################
+##Step 5: LAUNCH THE DASHBOARD
 
 In your web browser address line open the portal:
 
 	localhost:3000
 
-Grafana's username and password are stored in: DUNE ND Electronics Development/Control Monitors/Larpix Slow Controls Credentials.
+Grafana's username and password are stored in: 'DUNE ND Electronics Development/Control Monitors/Larpix Slow Controls Credentials'.
 
-Search for:
+Click on the 3 lines in the far-left upper corner next to 'Home'. Choose 'Dashboards'. There will be 2 folders. Go into the folder named 'B70-141'. 
 
- 	Larpix Slow Controls
+You will see at least 2 choices: 'Larpix Slow Controls - DO NOT EDIT', or 'Larpix Slow Controls - Editable'. If you wish to play with the dashboard go to the editable version. You can save your changes using your own name. For example, 'Larpix Slow Controls - cmcnulty'. Save your version by clicking on the gear symbol at the top of the dashboard. This will take you to a new page where you can configure certain parameters. Click on the "Save as" button at the top. 
 
-You will see at least 2 choices: (i) Larpix Slow Controls - DO NOT EDIT, (ii) Larpix Slow Controls - Editable. If you wish to play with the dashboard go to the editable version. If you wish to save your changes please save a version under your own name. For example, "Larpix Slow Controls - cmcnulty". Save your version by clicking on the gear symbol at the top of the dashboard. This will take you to a new page where you can configure certain parameters. Click on the "Save as" button at the top. 
-
-#################################################################################
-
-**Step 6: WHEN FINISHED, TURN ON HEATING STRIPS** 
-
-#################################################################################
+##Step 6: WHEN FINISHED, TURN ON HEATING STRIPS
 
 A Rigol DP932U power supply sits on the shelf above the bench next to the cryostat. It's connected to two heating strips inside the cryo via 4 wires plugged into Rigol channels 1 and 2. These heating strips will speed up the liquid evaporation process when you are finished testing. 
 
-Kill the monitoring process launched in Step 2 (python code larpix_monitor.py), and turn off the cryo-control Raspberry Pi. Turn off the Rigol power supply. These steps are necessary to break the remote connection between the Pi and the Rigol.
+(i) Kill the monitoring process launched in Step 2 (python code larpix_monitor.py), and turn off the cryo-control Raspberry Pi. Turn off the Rigol power supply. These steps are necessary to break the remote connection between the Pi and the Rigol.
 
-(i) Turn the Rigol back on, (ii) set the voltage and current on both channels to: voltage = 32V and current = 3A. (iii) Turn on both channel 1 and 2.
+(ii) Turn the Rigol back on, 
+
+(iii) set the voltage and current on both channels to: voltage = 32V and current = 3A. 
+
+(iii) Turn on both channel 1 and 2.
 
 Turn the cryo-control Pi back on and relaunch the python code larpix_monitor.py.
 
-If the code is running successfully, the dashboard should indicate power to the heating strips of ~70W.
+If the code is running successfully, the monitoring dashboard should indicate power to the heating strips of ~70W.
 
-The power to the heating strips should turn off automatically when the temperature sensor on either the top plate or bottom of cryo reaches 273 K. However, someone should monitor the temperature and power to the strips in case the automatic shut off mechanism malfunctions. 
+The power to the heating strips should turn off automatically when the temperature sensor on either the top plate or bottom of cryo reaches 200 K. However, someone should monitor the temperature and power to the strips in case the automatic shut off mechanism malfunctions. 
 
-#################################################################################
-
-**Step 7: STOP THE MONITORING SESSION** 
-
-#################################################################################
+##Step 7: STOP THE MONITORING SESSION
 
 Continue monitoring until the temperature in the cryostat has reached a safe level to open the lid (we suggest T > 273K).
 
@@ -176,7 +146,7 @@ Type the follwoing into the terminal window:
 
 	ps -ef
 
-Amongst the resulting list, look for a line with "larpix_monitor.py" on the end. Example:
+Amongst the resulting list, look for a line with 'larpix_monitor.py' on the end. Example:
 
 	larpix     13762   13743 29 07:11 pts/1    00:00:11 python3 larpix_monitor.py
 
@@ -184,19 +154,15 @@ Stop the monitoring code (using this example):
 
 	kill 13762
 
-Follow the same steps to kill "heat_on.py"
+Follow the same steps to kill 'heat_on.py'
 
-Follow the same steps on the hv-control raspberry pi to kill "hv_read_write.py"
+Follow the same steps on the hv-control raspberry pi to kill 'hv_read_write.py'
 
-#################################################################################
-
-**Trouble Shooting** 
-
-#################################################################################
+##Trouble Shooting
 
 If the monitoring code won't launch make sure all devices are turned on (step 1). 
 
-If Grafana is consuming a lot of CPU, first try killing the monitoring python code and relaunching it. If that doesn't work, kill Grafana and restart it by using:
+If Grafana is consuming too much CPU, first try killing the monitoring python code and relaunching it. If that doesn't work, kill Grafana and restart it by using:
 
 	 sudo systemctl restart grafana-server
 
@@ -215,7 +181,7 @@ If sending data to InfluxDB is causing timeout errors, put the following script 
 	except urllib3.exceptions.ReadTimeoutError:
     	    continue 
 
-Two python scripts cannot use same 8086 port for InfluxDB. Instead set up separate containers by following steps (i) - (iii). 
+Two python scripts cannot use same 8086 port for InfluxDB. Instead set up separate containers by following these steps: 
 
 (i) create a directory for Influx's storage: 
 
