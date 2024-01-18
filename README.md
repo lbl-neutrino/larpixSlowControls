@@ -1,4 +1,4 @@
-#Building 70-141 CRYOSTAT SLOW CONTROLS
+# Building 70-141 CRYOSTAT SLOW CONTROLS
 
 This code creates a user interface for monitoring Building 70/141 cryostat controls, including:
 
@@ -30,7 +30,7 @@ Steps (detailed below) to monitor Blg 70/141 cryostat controls include:
 
 **Troubleshooting**
 
-##Step 1: TURN ON DEVICES
+## Step 1: TURN ON DEVICES
 
 If you do not provide power to the following devices the python code may not run.
 
@@ -42,7 +42,7 @@ If you do not provide power to the following devices the python code may not run
 
 - The Rigol power supply for the heating strips sits on the shelf above the bench next to the cryostat (facing the door). Make sure it is turned ON and set to V=0 and I=0 (unless you're ready to turn on the heaters)
 
-##Step 2: LAUNCH A MONITORING SESSION
+## Step 2: LAUNCH A MONITORING SESSION
 
 The cryo-control raspberry pi is used to monitor temperature, level, pressure and heat strip power.
 
@@ -86,7 +86,7 @@ To exit the larpix-control screen hit:
 
  	Ctrl+a d
 
-##Step 3 (optional): LAUNCH High Voltage Controls
+## Step 3 (optional): LAUNCH High Voltage Controls
 
 The hv-control raspberry pi is used to monitor the voltage and/or current supplied to test subjects. If the Spellman HV supply is not turned on, the python code will not run. 
 
@@ -96,7 +96,7 @@ Instructions for logging into the hv-control Raspberry Pi are in the file:  'DUN
 
 Follow Step 2 again, but use the screen name 'hv-control' and python code 'hv_read_write.py'
 
-##Step 4: CONNECT to LABPIX
+## Step 4: CONNECT to LABPIX
 
 If you're working on labpix, skip this step. 
 
@@ -106,7 +106,7 @@ In a terminal window, connect a port on your computer to port 3000 on Labpix:
 
 Notes: Change to your username and if necessary, change the 1st 3000 in this example to any open port on your computer. 
 
-##Step 5: LAUNCH THE DASHBOARD
+## Step 5: LAUNCH THE DASHBOARD
 
 In your web browser address line open the portal:
 
@@ -118,7 +118,7 @@ Click on the 3 lines in the far-left upper corner next to 'Home'. Choose 'Dashbo
 
 You will see at least 2 choices: 'Larpix Slow Controls - DO NOT EDIT', or 'Larpix Slow Controls - Editable'. If you wish to play with the dashboard go to the editable version. You can save your changes using your own name. For example, 'Larpix Slow Controls - cmcnulty'. Save your version by clicking on the gear symbol at the top of the dashboard. This will take you to a new page where you can configure certain parameters. Click on the "Save as" button at the top. 
 
-##Step 6: WHEN FINISHED, TURN ON HEATING STRIPS
+## Step 6: WHEN FINISHED, TURN ON HEATING STRIPS
 
 A Rigol DP932U power supply sits on the shelf above the bench next to the cryostat. It's connected to two heating strips inside the cryo via 4 wires plugged into Rigol channels 1 and 2. These heating strips will speed up the liquid evaporation process when you are finished testing. 
 
@@ -136,7 +136,7 @@ If the code is running successfully, the monitoring dashboard should indicate po
 
 The power to the heating strips should turn off automatically when the temperature sensor on either the top plate or bottom of cryo reaches 200 K. However, someone should monitor the temperature and power to the strips in case the automatic shut off mechanism malfunctions. 
 
-##Step 7: STOP THE MONITORING SESSION
+## Step 7: STOP THE MONITORING SESSION
 
 Continue monitoring until the temperature in the cryostat has reached a safe level to open the lid (we suggest T > 273K).
 
@@ -158,7 +158,7 @@ Follow the same steps to kill 'heat_on.py'
 
 Follow the same steps on the hv-control raspberry pi to kill 'hv_read_write.py'
 
-##Trouble Shooting
+## Trouble Shooting
 
 If the monitoring code won't launch make sure all devices are turned on (step 1). 
 
