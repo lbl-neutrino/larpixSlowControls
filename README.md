@@ -1,18 +1,8 @@
 # Building 70-141 CRYOSTAT SLOW CONTROLS
 
-This code creates a user interface for monitoring Building 70/141 cryostat controls, including:
+This code creates a user interface for monitoring Building 70/141 cryostat controls, including the liquid level, temperature on 6 sensors, pressure inside cryostat, high-voltage and/or current supplied to a test subject (optional), and power supplied to heating strips.
 
-- liquid level, 
-
-- temperature on 6 sensors
-
--  pressure inside cryostat
-
-- high-voltage and/or current supplied to a test subject (optional)
-
-- power supplied to heating strips
-
-Steps (detailed below) to monitor Blg 70/141 cryostat controls include:
+Steps (detailed below) to monitor Blg 70-141 cryostat controls include:
 
 - **Step 1:** Turn on devices
 
@@ -160,12 +150,17 @@ Follow the same steps on the hv-control raspberry pi to kill `hv_read_write.py`
 
 ## Trouble Shooting
 
+### Python Code
 If the monitoring code won't launch make sure all devices are turned on (step 1). 
 
+### Grafana 
 If Grafana is consuming too much CPU, first try killing the monitoring python code and relaunching it. If that doesn't work, kill Grafana and restart it by using:
 
 	 sudo systemctl restart grafana-server
 
+In general the same restart command can be used if Grafana isn't running (i.e.  if port 3000 doesn't automatically take you to Grafana).
+
+### InfluxDB
 The commands to restart InfluxDB must be run as mkramer (impersonating Matt Kramer):
 
  	sudo su mkramer 
