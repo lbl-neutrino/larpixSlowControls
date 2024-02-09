@@ -161,11 +161,18 @@ If Grafana is consuming too much CPU, first try killing the monitoring python co
 In general the same restart command can be used if Grafana isn't running (i.e.  if port 3000 doesn't automatically take you to Grafana).
 
 ### InfluxDB
-The commands to restart InfluxDB must be run as mkramer (impersonating Matt Kramer):
+
+To start (or restart) InfluxDB, log onto labpix. Make sure you're in the right directory
+
+	cd /
+
+The command to restart InfluxDB must be run as mkramer (impersonating Matt Kramer):
 
  	sudo su mkramer 
 
  	podman start influx_matt 
+
+If you want to restart influx, just type "restart" instead of "start" in the podman command above. 
 
 If sending data to InfluxDB is causing timeout errors, put the following script around the code where the errors tend to occur.
 
