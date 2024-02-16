@@ -45,9 +45,10 @@ def read_level():
     caps, median_levels = [], []
     cap, i, median_cap, level = 0,0,0,0
 
-    # used to convert levels to capacitance
-    min_cap = 0.9520581
-    conversion_factor = 29.952523
+    # used to convert capacitance to levels
+    min_cap = 11.4275
+    max_cap = 13.5980
+    conversion_factor = 687/(max_cap - min_cap)
 #    min_cap = 1.0646713                # small bucket w sensor diagonal
 #    conversion_factor = 35.5198143     # small bucket w sensor diagonal
 
@@ -204,7 +205,7 @@ def read_heat():
     return power1, power2
     
 ####################################################################
-# Open files to initialize sensors or convert resistance to temperature
+# Open files for initializations or converstion
 ####################################################################
 
 # open file that converts resistance to temperature
@@ -289,11 +290,11 @@ while(run == 0):
     heat1, heat2 = read_heat()
     
     # if the temperature at the bottom of the cryostat (tempers[0])
-    # gets above 0K, wait 5s, test again, if still > 0K (i.e. 
+    # gets above 200K, wait 5s, test again, if still > 200K (i.e. 
     # not an eroneous reading) then turn off heating strips
-    if ((heat1 or heat2) > 1) and (tempers[5] or tempers[0] > 273): 
+    if ((heat1 or heat2) > 1) and (tempers[5] or tempers[0] > 200): 
         time.sleep(5)
-        if (tempers[5] or tempers[0]) > 273:
+        if (tempers[5] or tempers[0]) > 200:
             set_heat(0,0,0)
             heat1, heat2 = read_heat()
 
