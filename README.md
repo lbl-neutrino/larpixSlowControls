@@ -154,6 +154,8 @@ Follow the same steps on the hv-control raspberry pi to kill `hv_read_write.py`
 If the monitoring code won't launch make sure all devices are turned on (step 1). 
 
 ### Grafana 
+If Grafana tells you it can not retrieve data, check to make sure that the session on your local terminal window ("ssh"ing into the computer hosting Grafana) is still active. 
+
 If Grafana is consuming too much CPU, first try killing the monitoring python code and relaunching it. If that doesn't work, kill Grafana and restart it by using:
 
 	 sudo systemctl restart grafana-server
