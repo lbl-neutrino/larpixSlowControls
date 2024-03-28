@@ -54,8 +54,7 @@ DATA_RATE = 8
 calibration = 10/21351
 
 # initialize variables
-pre_calibration, vac_pressure, calibrated_voltage = 0,0,0
-vac_pressure_label = "vac_pressure"
+pre_calibration, vac_pressure, calibrated_voltage, p1 = float(0.0), float(0.0), float(0.0), float(0.0)
 conversion, a, b = 0, 0, 0
 
 ########################################################################
@@ -77,8 +76,7 @@ while True:
     pre_calibration = adc.read_adc(0, gain=GAIN, data_rate=DATA_RATE)
 
     # back-out influence of resistor
-    calibrated_voltage = (pre_calibration-15) * calibration
-    print(f"V = {calibrated_voltage}")
+    calibrated_voltage = (pre_calibration-13) * calibration
 
     # convert voltage from the Edwards-wrg200 pressure to pressure
     if calibrated_voltage > 10 or calibrated_voltage < 1.4:
@@ -94,10 +92,11 @@ while True:
 
     vac_pressure = calibrated_voltage * conversion
 
+    print(f"Pressure = {vac_pressure}")
+
     # create a data point (p) which identifies the measurement
     # category (measurement = "larpix_slow_controls"), name and value
-    p1 = influxdb_client.Point(measurement).field(vac_pressure_label,
-            vac_pressure)
+    p1 = influxdb_client.Point(measurement).field("vac_pressure",vac_pressure)
         
     # push the point into the identified InfluxDB account
     write_api.write(bucket=bucket, org=ORG, record=p1)
