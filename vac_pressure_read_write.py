@@ -51,7 +51,7 @@ DATA_RATE = 8
 # resistors were used on the inputs to the ADC to divide the voltage
 # down to levels the ADC can handle. The calibration constant removes
 # the influence of the resistors
-calibration = 1
+calibration = 10/21351
 
 # initialize variables
 pre_calibration, vac_pressure, calibrated_voltage = 0,0,0
@@ -77,7 +77,8 @@ while True:
     pre_calibration = adc.read_adc(0, gain=GAIN, data_rate=DATA_RATE)
 
     # back-out influence of resistor
-    calibrated_voltage = pre_calibration * calibration
+    calibrated_voltage = (pre_calibration-15) * calibration
+    print(f"V = {calibrated_voltage}")
 
     # convert voltage from the Edwards-wrg200 pressure to pressure
     if calibrated_voltage > 10 or calibrated_voltage < 1.4:
@@ -85,11 +86,11 @@ while True:
     elif calibrated_voltage > 2:
         a = 8.083
         b = 0.667
-        conversion = 10 ^ ((calibrated_voltage - a) / b)
+        conversion = 10 ** ((calibrated_voltage - a) / b)
     else:
         a = 6.875
         b = 0.600
-        conversion = 10 ^ ((calibrated_voltage - a) / b)
+        conversion = 10 ** ((calibrated_voltage - a) / b)
 
     vac_pressure = calibrated_voltage * conversion
 
