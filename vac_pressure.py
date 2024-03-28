@@ -77,7 +77,7 @@ while True:
     pre_calibration = adc.read_adc(0, gain=GAIN, data_rate=DATA_RATE)
 
     # back-out influence of resistor
-    calibrated_voltage = (pre_calibration-15) * calibration
+    calibrated_voltage = (pre_calibration-14) * calibration
     print(f"V = {calibrated_voltage}")
 
     # convert voltage from the Edwards-wrg200 pressure to pressure

@@ -30,11 +30,52 @@ import time
 # urllib3 has functions that will help with timeout url problems
 import urllib3
 
+import time
+
+# Import ADS1x15 command library to read high voltages via ADC
+import Adafruit_ADS1x15
+
+# shorten the prefix for ADS1115 commands
+adc = Adafruit_ADS1x15.ADS1115()
+
 ######################################################################
 # Functions
 ######################################################################
+# read a new vacuum pressure measurement from an ADS1115 ADC
+def read_vac_pressure():
 
-# Read the level of liquid in the Larpix Cryostat, by reading a CDC 
+    # initialize variables
+    pre_calibration, v_pressure, calibrated_voltage, conversion, a, b = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+    GAIN = 1
+    DATA_RATE = 8
+
+    # This calibration constant removes the influence of the resistors
+    # added to the ADC
+    calibration = 10 / 21351
+
+    pre_calibration = adc.read_adc(0, gain=GAIN, data_rate=DATA_RATE)
+
+    # back-out influence of resistor but first remove zero offset
+    calibrated_voltage = (pre_calibration - 14) * calibration
+    print(f"V = {calibrated_voltage}")
+
+    # convert voltage read from the Edwards-wrg200 to pressure
+    if calibrated_voltage > 10 or calibrated_voltage < 1.4:
+        print(f"V must be in range (1.4V, 10V), but V = {calibrated_voltage}")
+    elif calibrated_voltage > 2:
+        a = 8.083
+        b = 0.667
+        conversion = 10 ** ((calibrated_voltage - a) / b)
+    else:
+        a = 6.875
+        b = 0.600
+        conversion = 10 ** ((calibrated_voltage - a) / b)
+
+    v_pressure = calibrated_voltage * conversion
+
+    return v_pressure
+
+# Read the level of liquid in the Larpix Cryostat, by reading a CDC
 # (capacitance to digital converter). To improve precision this routine 
 # reads capacitance 10 times, takes the median of every 5, and then 
 # averages the medians.
@@ -205,7 +246,7 @@ def read_heat():
     return power1, power2
     
 ####################################################################
-# Open files for initializations or converstion
+# Open files for initializations or conversion
 ####################################################################
 
 # open file that converts resistance to temperature
@@ -236,11 +277,12 @@ power_supply = rm.open_resource(usb_heat)   # connect to the usb port
 # set global variables
 ######################################################################
 
-# level and temperature sensors
+# level, temperature sensors and vac_pressure
 level = 0
 tempers = []
 t_labels = ["t_cryo_bottom","t_under_bucket","t_sensor1", "t_sensor2",
             "t_sensor3","t_top_plate"]
+vac_pressure = 0.0
 run = 0
 
 # power supplied to the heating strips
@@ -311,7 +353,7 @@ while(run == 0):
     except urllib3.exceptions.ReadTimeoutError:
         continue
 
-    # read pressure
+    # read crude pressure
     pressure = read_pressure()
     # write pressure to influxDB
     p = influxdb_client.Point("larpix_slow_controls").field("pressure", pressure)
@@ -319,4 +361,12 @@ while(run == 0):
         write_api.write(bucket=bucket, org=org, record=p)
     except urllib3.exceptions.ReadTimeoutError:
         continue
-    
+
+    # read more precise vacuum pressure
+    vac_pressure = read_vac_pressure()
+    # write vac pressure to influxDB
+    p = influxdb_client.Point("larpix_slow_controls").field("vac_pressure", vac_pressure)
+    try:
+        write_api.write(bucket=bucket, org=org, record=p)
+    except urllib3.exceptions.ReadTimeoutError:
+        continue
