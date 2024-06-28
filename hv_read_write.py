@@ -33,10 +33,10 @@ adc = Adafruit_ADS1x15.ADS1115()
 # portal (url), and the InfluxDB path for voltage data (tagged with 
 # bucket, measurement and field)
 ORG = "lbl-neutrino"
-TOKEN = "-IkZYxHAAahMAM_11tBbmtxr3tKpF7gC4wMlRZgw2rW6Fm-Ifykrt8ZgOo3c_h2jUYD3hNSp5FHr_IqtuXlCgw=="
-URL = "http://labpix.dhcp.lbl.gov:8086"
-bucket = "cryostat-sensors"
-measurement = 'larpix_slow_controls'
+TOKEN = "JRS1O-0BiJ-2dwz1pIaWobkKkYoXS3oN0GD9UJea22jvqwp6H1mvLvNzw3naahbSF7UxnD8PdMgmT3E4XdTerw=="
+URL = "http://labpix.dhcp.lbl.gov:28086"
+bucket = "hv-controls"
+measurement = 'readings-settings'
 
 # set gain appropriate for range of input voltages:
 #   GAIN     RANGE
@@ -95,12 +95,12 @@ while True:
 
     for i in range(4):
         pre_calibrations[i] = adc.read_adc(i, gain=GAIN, data_rate=DATA_RATE)
-
+        
         # Calibrate for resistor variation and pin-to-actual values
         voltages[i] = pre_calibrations[i] * calibrations[i] * conversions[i]
 
         # create a data point (p) which identifyies the measurement
-        # category (measurement = "larpix_slow_controls"), name and value
+        # category (measurement is assigned earlier), name and value
         p1 = influxdb_client.Point(measurement).field(voltage_labels[i], 
             voltages[i])
         
@@ -111,7 +111,7 @@ while True:
     try: 
 
         # measure resistance along cable carrying current btwn cathode & anode) 
-        resistance = voltages[1] / voltages[0]
+        resistance = (voltages[1] / voltages[0]) / 1000
 
         # push resistance to influxdb using the point p2
         p2 = influxdb_client.Point(measurement).field("resistance", 
