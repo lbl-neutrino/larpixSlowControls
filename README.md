@@ -8,7 +8,9 @@ Steps (detailed below) to monitor Blg 70-141 cryostat controls include:
 
 - **Step 2:** Launch monitoring code
 
-- **Step 3 (optional):** launch high voltage code
+- **Step 3a (optional):** launch high voltage code
+
+- **Step 3b (optional):** launch low voltage code
 
 - **Step 4:** Connect to labpix
 
@@ -76,7 +78,7 @@ To exit the larpix-control screen hit:
 
  	Ctrl+a d
 
-## Step 3 (optional): LAUNCH High Voltage Controls
+## Step 3a (optional): LAUNCH High Voltage Controls
 
 The hv-control raspberry pi is used to monitor the voltage and/or current supplied to test subjects. If the Spellman HV supply is not turned on, the python code will not run. 
 
@@ -84,7 +86,17 @@ Instructions for logging into the hv-control Raspberry Pi are in the file:  `DUN
 
 **Only one monitoring session should be launched at a time.** 
 
-Follow Step 2 again, but use the screen name `hv-control` and python code `hv_read_write.py`
+Follow Step 2 again, but use the screen name `hv-control` and python code `hv_read_write.py` which is located in the high-voltage directory
+
+## Step 3b (optional): LAUNCH Low Voltage Controls
+
+The high-voltage code and the low-voltage code CANNOT be run at the same time. The low-voltage code is just for monitoring the voltage supplied to the FSD tiles, which will not be run with HV so this should not be a problem. The low-voltage code is on the same pi and the high-voltage code. 
+
+Instructions for logging into the hv-control Raspberry Pi are in the file:  `DUNE ND Electronics Development / Operations / Bldg 70/141 / 70/141 Credentials Database Dashboard Pi` 
+
+**Only one monitoring session should be launched at a time.** 
+
+Follow Step 2 again, but use the screen name `lv-control` and python code `lv_read_write.py` which is located in the "FSD" directory. 
 
 ## Step 4: CONNECT to LABPIX
 
@@ -146,7 +158,9 @@ Stop the monitoring code (using this example):
 
 Follow the same steps to kill `heat_on.py`
 
-Follow the same steps on the hv-control raspberry pi to kill `hv_read_write.py`
+Follow the same steps on the hv-control raspberry pi to kill `hv_read_write.py` or 'lv-control.py'
+
+If you are monitoring the low voltage run the code "turn_off_lv.py". 
 
 ## Trouble Shooting
 
