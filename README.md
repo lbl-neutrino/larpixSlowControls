@@ -104,7 +104,7 @@ If you're working on labpix, skip this step.
 
 In a terminal window, connect a port on your computer to port 3000 on Labpix:
 
-	ssh -L 3000:localhost:3000 username@labpix.dhcp.lbl.gov
+	ssh -L 3000:localhost:3000 username@labpix.lbl.gov
 
 Notes: Change to your username and if necessary, change the 1st 3000 in this example to any open port on your computer. 
 
